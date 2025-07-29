@@ -1,0 +1,90 @@
+{
+  "kind": "collectionType",
+  "collectionName": "slide_types",
+  "info": {
+    "singularName": "slide-type",
+    "pluralName": "slide-types",
+    "displayName": "Slide Type",
+    "description": "Different types of slides with their HTML structure and styling"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "name",
+      "required": true
+    },
+    "slide_type_key": {
+      "type": "enumeration",
+      "enum": [
+        "title-slide",
+        "agenda-slide",
+        "accent-image-slide",
+        "heading-text-slide",
+        "text-card-slide",
+        "unordered-bullets-slide",
+        "image-formats-slide"
+      ],
+      "required": true
+    },
+    "description": {
+      "type": "text"
+    },
+    "html_structure": {
+      "type": "text",
+      "required": true,
+      "description": "HTML template structure with placeholder variables"
+    },
+    "scss_styles": {
+      "type": "text",
+      "description": "SCSS/CSS styles specific to this slide type"
+    },
+    "data_attributes": {
+      "type": "json",
+      "description": "Configuration for data attributes like data-type, data-variant"
+    },
+    "placeholder_config": {
+      "type": "json",
+      "description": "Configuration for content placeholders and their types"
+    },
+    "template": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::template.template",
+      "inversedBy": "slide_types"
+    },
+    "variants": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::template-variant.template-variant",
+      "mappedBy": "slide_type"
+    },
+    "background_image": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["images"]
+    },
+    "thumbnail": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["images"]
+    },
+    "sort_order": {
+      "type": "integer",
+      "default": 0
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  }
+}

@@ -1,0 +1,90 @@
+{
+  "kind": "collectionType",
+  "collectionName": "template_variants",
+  "info": {
+    "singularName": "template-variant",
+    "pluralName": "template-variants",
+    "displayName": "Template Variant",
+    "description": "Layout variations for slide types with background configurations"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "name",
+      "required": true
+    },
+    "variant_key": {
+      "type": "enumeration",
+      "enum": [
+        "top-image",
+        "left-image",
+        "no-image",
+        "left-heading",
+        "default",
+        "square-image",
+        "left-background",
+        "right-background",
+        "top-left-background",
+        "bottom-right-background"
+      ],
+      "required": true
+    },
+    "description": {
+      "type": "text"
+    },
+    "additional_css": {
+      "type": "text",
+      "description": "Additional CSS specific to this variant"
+    },
+    "html_modifications": {
+      "type": "text",
+      "description": "HTML structure modifications for this variant"
+    },
+    "background_config": {
+      "type": "json",
+      "description": "Background image position and styling configuration"
+    },
+    "layout_config": {
+      "type": "json",
+      "description": "Layout-specific configuration (grid, flexbox, positioning)"
+    },
+    "slide_type": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::slide-type.slide-type",
+      "inversedBy": "variants"
+    },
+    "background_images": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::background-image.background-image",
+      "mappedBy": "variant"
+    },
+    "preview_image": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["images"]
+    },
+    "is_default": {
+      "type": "boolean",
+      "default": false
+    },
+    "sort_order": {
+      "type": "integer",
+      "default": 0
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  }
+}

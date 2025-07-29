@@ -4,6 +4,7 @@ const fs = require('fs-extra');
 const path = require('path');
 const mime = require('mime-types');
 const { categories, authors, articles, global, about } = require('../data/data.json');
+const { seedPresentationTemplates } = require('./seed-presentation-templates');
 
 async function seedExampleApp() {
   const shouldImportSeedData = await isFirstRun();
@@ -18,9 +19,7 @@ async function seedExampleApp() {
       console.error(error);
     }
   } else {
-    console.log(
-      'Seed data has already been imported. We cannot reimport unless you clear your database first.'
-    );
+    console.log('Seed data has already been imported. We cannot reimport unless you clear your database first.');
   }
 }
 
@@ -244,6 +243,10 @@ async function importSeedData() {
     author: ['find', 'findOne'],
     global: ['find', 'findOne'],
     about: ['find', 'findOne'],
+    template: ['find', 'findOne'],
+    'slide-type': ['find', 'findOne'],
+    'template-variant': ['find', 'findOne'],
+    'background-image': ['find', 'findOne'],
   });
 
   // Create all entries
@@ -252,6 +255,9 @@ async function importSeedData() {
   await importArticles();
   await importGlobal();
   await importAbout();
+
+  // Import presentation template data
+  await seedPresentationTemplates();
 }
 
 async function main() {
