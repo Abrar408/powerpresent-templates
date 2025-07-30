@@ -1,0 +1,59 @@
+{
+  "collectionName": "components_shared_elements",
+  "info": {
+    "displayName": "Element"
+  },
+  "options": {},
+  "attributes": {
+    "type": {
+      "type": "enumeration",
+      "required": true,
+      "enum": [
+        "heading1",
+        "heading2",
+        "heading3",
+        "heading4",
+        "paragraph",
+        "ordered-bullets",
+        "un-ordered-bullets",
+        "image",
+        "shape",
+        "group",
+        "background-element"
+      ]
+    },
+    "style": {
+      "type": "json"
+    },
+    "children": {
+      "type": "component",
+      "conditions": {
+        "visible": {
+          "==": [
+            {
+              "var": "type"
+            },
+            "group"
+          ]
+        }
+      },
+      "component": "shared.child-element",
+      "repeatable": true
+    },
+    "background_element": {
+      "type": "component",
+      "conditions": {
+        "visible": {
+          "==": [
+            {
+              "var": "type"
+            },
+            "background-element"
+          ]
+        }
+      },
+      "component": "shared.background-element",
+      "repeatable": false
+    }
+  }
+}

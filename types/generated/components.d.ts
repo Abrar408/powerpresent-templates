@@ -1,5 +1,76 @@
 import type { Schema, Struct } from '@strapi/strapi';
 
+export interface SharedBackgroundElement extends Struct.ComponentSchema {
+  collectionName: 'components_shared_background_elements';
+  info: {
+    displayName: 'Background Element';
+  };
+  attributes: {
+    media: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+    position: Schema.Attribute.Enumeration<['left', 'right']>;
+  };
+}
+
+export interface SharedChildElement extends Struct.ComponentSchema {
+  collectionName: 'components_shared_child_elements';
+  info: {
+    displayName: 'Child Element';
+  };
+  attributes: {
+    background_element: Schema.Attribute.Component<
+      'shared.background-element',
+      false
+    >;
+    style: Schema.Attribute.JSON;
+    type: Schema.Attribute.Enumeration<
+      [
+        'heading1',
+        'heading2',
+        'heading3',
+        'heading4',
+        'paragraph',
+        'ordered-bullets',
+        'un-ordered-bullets',
+        'image',
+        'shape',
+        'background-element',
+      ]
+    > &
+      Schema.Attribute.Required;
+  };
+}
+
+export interface SharedElement extends Struct.ComponentSchema {
+  collectionName: 'components_shared_elements';
+  info: {
+    displayName: 'Element';
+  };
+  attributes: {
+    background_element: Schema.Attribute.Component<
+      'shared.background-element',
+      false
+    >;
+    children: Schema.Attribute.Component<'shared.child-element', true>;
+    style: Schema.Attribute.JSON;
+    type: Schema.Attribute.Enumeration<
+      [
+        'heading1',
+        'heading2',
+        'heading3',
+        'heading4',
+        'paragraph',
+        'ordered-bullets',
+        'un-ordered-bullets',
+        'image',
+        'shape',
+        'group',
+        'background-element',
+      ]
+    > &
+      Schema.Attribute.Required;
+  };
+}
+
 export interface SharedMedia extends Struct.ComponentSchema {
   collectionName: 'components_shared_media';
   info: {
@@ -65,6 +136,9 @@ export interface SharedSlider extends Struct.ComponentSchema {
 declare module '@strapi/strapi' {
   export module Public {
     export interface ComponentSchemas {
+      'shared.background-element': SharedBackgroundElement;
+      'shared.child-element': SharedChildElement;
+      'shared.element': SharedElement;
       'shared.media': SharedMedia;
       'shared.quote': SharedQuote;
       'shared.rich-text': SharedRichText;

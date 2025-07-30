@@ -373,57 +373,6 @@ export interface AdminUser extends Struct.CollectionTypeSchema {
   };
 }
 
-export interface ApiBackgroundImageBackgroundImage
-  extends Struct.CollectionTypeSchema {
-  collectionName: 'background_images';
-  info: {
-    description: 'Background images with position metadata';
-    displayName: 'Background Image';
-    pluralName: 'background-images';
-    singularName: 'background-image';
-  };
-  options: {
-    draftAndPublish: true;
-  };
-  attributes: {
-    createdAt: Schema.Attribute.DateTime;
-    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-    css_properties: Schema.Attribute.JSON;
-    description: Schema.Attribute.Text;
-    image: Schema.Attribute.Media<'images'> & Schema.Attribute.Required;
-    is_default: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
-    locale: Schema.Attribute.String & Schema.Attribute.Private;
-    localizations: Schema.Attribute.Relation<
-      'oneToMany',
-      'api::background-image.background-image'
-    > &
-      Schema.Attribute.Private;
-    name: Schema.Attribute.String & Schema.Attribute.Required;
-    position: Schema.Attribute.Enumeration<
-      [
-        'left-background',
-        'right-background',
-        'top-left-background',
-        'bottom-right-background',
-        'center',
-        'cover',
-        'contain',
-      ]
-    > &
-      Schema.Attribute.Required;
-    publishedAt: Schema.Attribute.DateTime;
-    tags: Schema.Attribute.JSON;
-    updatedAt: Schema.Attribute.DateTime;
-    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-    variant: Schema.Attribute.Relation<
-      'manyToOne',
-      'api::template-variant.template-variant'
-    >;
-  };
-}
-
 export interface ApiGlobalGlobal extends Struct.SingleTypeSchema {
   collectionName: 'globals';
   info: {
@@ -456,122 +405,36 @@ export interface ApiGlobalGlobal extends Struct.SingleTypeSchema {
   };
 }
 
-export interface ApiSlideTypeSlideType extends Struct.CollectionTypeSchema {
-  collectionName: 'slide_types';
+export interface ApiSlideSlide extends Struct.CollectionTypeSchema {
+  collectionName: 'slides';
   info: {
-    description: 'Different types of slides with their HTML structure and styling';
-    displayName: 'Slide Type';
-    pluralName: 'slide-types';
-    singularName: 'slide-type';
+    description: 'Individual slides within a template';
+    displayName: 'Slide';
+    pluralName: 'slides';
+    singularName: 'slide';
   };
   options: {
-    draftAndPublish: true;
+    draftAndPublish: false;
   };
   attributes: {
+    background_color: Schema.Attribute.String &
+      Schema.Attribute.CustomField<'plugin::color-picker.color'>;
     background_image: Schema.Attribute.Media<'images'>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    data_attributes: Schema.Attribute.JSON;
-    description: Schema.Attribute.Text;
-    html_structure: Schema.Attribute.Text & Schema.Attribute.Required;
-    is_active: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    elements: Schema.Attribute.Component<'shared.element', true>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
-    localizations: Schema.Attribute.Relation<
-      'oneToMany',
-      'api::slide-type.slide-type'
-    > &
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::slide.slide'> &
       Schema.Attribute.Private;
     name: Schema.Attribute.String & Schema.Attribute.Required;
-    placeholder_config: Schema.Attribute.JSON;
     publishedAt: Schema.Attribute.DateTime;
-    scss_styles: Schema.Attribute.Text;
-    slide_type_key: Schema.Attribute.Enumeration<
-      [
-        'title-slide',
-        'agenda-slide',
-        'accent-image-slide',
-        'heading-text-slide',
-        'text-card-slide',
-        'unordered-bullets-slide',
-        'image-formats-slide',
-      ]
-    > &
-      Schema.Attribute.Required;
-    slug: Schema.Attribute.UID<'name'> & Schema.Attribute.Required;
-    sort_order: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    style: Schema.Attribute.JSON;
     template: Schema.Attribute.Relation<'manyToOne', 'api::template.template'>;
-    thumbnail: Schema.Attribute.Media<'images'>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    variants: Schema.Attribute.Relation<
-      'oneToMany',
-      'api::template-variant.template-variant'
-    >;
-  };
-}
-
-export interface ApiTemplateVariantTemplateVariant
-  extends Struct.CollectionTypeSchema {
-  collectionName: 'template_variants';
-  info: {
-    description: 'Layout variations for slide types with background configurations';
-    displayName: 'Template Variant';
-    pluralName: 'template-variants';
-    singularName: 'template-variant';
-  };
-  options: {
-    draftAndPublish: true;
-  };
-  attributes: {
-    additional_css: Schema.Attribute.Text;
-    background_config: Schema.Attribute.JSON;
-    background_images: Schema.Attribute.Relation<
-      'oneToMany',
-      'api::background-image.background-image'
-    >;
-    createdAt: Schema.Attribute.DateTime;
-    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-    description: Schema.Attribute.Text;
-    html_modifications: Schema.Attribute.Text;
-    is_active: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
-    is_default: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
-    layout_config: Schema.Attribute.JSON;
-    locale: Schema.Attribute.String & Schema.Attribute.Private;
-    localizations: Schema.Attribute.Relation<
-      'oneToMany',
-      'api::template-variant.template-variant'
-    > &
-      Schema.Attribute.Private;
-    name: Schema.Attribute.String & Schema.Attribute.Required;
-    preview_image: Schema.Attribute.Media<'images'>;
-    publishedAt: Schema.Attribute.DateTime;
-    slide_type: Schema.Attribute.Relation<
-      'manyToOne',
-      'api::slide-type.slide-type'
-    >;
-    slug: Schema.Attribute.UID<'name'> & Schema.Attribute.Required;
-    sort_order: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
-    updatedAt: Schema.Attribute.DateTime;
-    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-    variant_key: Schema.Attribute.Enumeration<
-      [
-        'top-image',
-        'left-image',
-        'no-image',
-        'left-heading',
-        'default',
-        'square-image',
-        'left-background',
-        'right-background',
-        'top-left-background',
-        'bottom-right-background',
-      ]
-    > &
-      Schema.Attribute.Required;
+    variant: Schema.Attribute.String;
   };
 }
 
@@ -584,17 +447,12 @@ export interface ApiTemplateTemplate extends Struct.CollectionTypeSchema {
     singularName: 'template';
   };
   options: {
-    draftAndPublish: true;
+    draftAndPublish: false;
   };
   attributes: {
-    created_by_user: Schema.Attribute.String;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    default_styles: Schema.Attribute.JSON;
-    description: Schema.Attribute.Text;
-    global_css: Schema.Attribute.Text;
-    is_active: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -605,17 +463,7 @@ export interface ApiTemplateTemplate extends Struct.CollectionTypeSchema {
       Schema.Attribute.Required &
       Schema.Attribute.Unique;
     publishedAt: Schema.Attribute.DateTime;
-    slide_types: Schema.Attribute.Relation<
-      'oneToMany',
-      'api::slide-type.slide-type'
-    >;
-    slug: Schema.Attribute.UID<'name'> & Schema.Attribute.Required;
-    template_type: Schema.Attribute.Enumeration<
-      ['pitch-deck', 'corporate', 'educational', 'marketing']
-    > &
-      Schema.Attribute.Required &
-      Schema.Attribute.DefaultTo<'pitch-deck'>;
-    thumbnail: Schema.Attribute.Media<'images'>;
+    slides: Schema.Attribute.Relation<'oneToMany', 'api::slide.slide'>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1131,10 +979,8 @@ declare module '@strapi/strapi' {
       'admin::transfer-token': AdminTransferToken;
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
-      'api::background-image.background-image': ApiBackgroundImageBackgroundImage;
       'api::global.global': ApiGlobalGlobal;
-      'api::slide-type.slide-type': ApiSlideTypeSlideType;
-      'api::template-variant.template-variant': ApiTemplateVariantTemplateVariant;
+      'api::slide.slide': ApiSlideSlide;
       'api::template.template': ApiTemplateTemplate;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;

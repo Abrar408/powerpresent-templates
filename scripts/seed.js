@@ -4,7 +4,7 @@ const fs = require('fs-extra');
 const path = require('path');
 const mime = require('mime-types');
 const { categories, authors, articles, global, about } = require('../data/data.json');
-const { seedPresentationTemplates } = require('./seed-presentation-templates');
+const { seedSimpleTemplateSystem } = require('./seed-simple-templates');
 
 async function seedExampleApp() {
   const shouldImportSeedData = await isFirstRun();
@@ -244,9 +244,7 @@ async function importSeedData() {
     global: ['find', 'findOne'],
     about: ['find', 'findOne'],
     template: ['find', 'findOne'],
-    'slide-type': ['find', 'findOne'],
-    'template-variant': ['find', 'findOne'],
-    'background-image': ['find', 'findOne'],
+    slide: ['find', 'findOne'],
   });
 
   // Create all entries
@@ -256,8 +254,8 @@ async function importSeedData() {
   await importGlobal();
   await importAbout();
 
-  // Import presentation template data
-  await seedPresentationTemplates();
+  // Import simple template system data
+  await seedSimpleTemplateSystem();
 }
 
 async function main() {

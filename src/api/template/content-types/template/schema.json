@@ -8,7 +8,7 @@
     "description": "Presentation template definitions"
   },
   "options": {
-    "draftAndPublish": true
+    "draftAndPublish": false
   },
   "pluginOptions": {},
   "attributes": {
@@ -17,47 +17,11 @@
       "required": true,
       "unique": true
     },
-    "slug": {
-      "type": "uid",
-      "targetField": "name",
-      "required": true
-    },
-    "description": {
-      "type": "text"
-    },
-    "template_type": {
-      "type": "enumeration",
-      "enum": ["pitch-deck", "corporate", "educational", "marketing"],
-      "default": "pitch-deck",
-      "required": true
-    },
-    "default_styles": {
-      "type": "json",
-      "description": "Default CSS styles and theme configuration"
-    },
-    "global_css": {
-      "type": "text",
-      "description": "Global SCSS/CSS for the entire template"
-    },
-    "slide_types": {
+    "slides": {
       "type": "relation",
       "relation": "oneToMany",
-      "target": "api::slide-type.slide-type",
+      "target": "api::slide.slide",
       "mappedBy": "template"
-    },
-    "thumbnail": {
-      "type": "media",
-      "multiple": false,
-      "required": false,
-      "allowedTypes": ["images"]
-    },
-    "is_active": {
-      "type": "boolean",
-      "default": true
-    },
-    "created_by_user": {
-      "type": "string",
-      "description": "Creator information"
     }
   }
 }

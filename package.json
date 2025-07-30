@@ -8,12 +8,13 @@
     "deploy": "strapi deploy",
     "develop": "strapi develop",
     "seed:example": "node ./scripts/seed.js",
-    "seed:templates": "node ./scripts/seed-templates-standalone.js",
+    "seed:simple": "node ./scripts/seed-simple-standalone.js",
     "start": "strapi start",
     "strapi": "strapi"
   },
   "dependencies": {
     "@strapi/plugin-cloud": "5.19.0",
+    "@strapi/plugin-color-picker": "^5.19.0",
     "@strapi/plugin-users-permissions": "5.19.0",
     "@strapi/strapi": "5.19.0",
     "@strapi/types": "^5.19.0",
