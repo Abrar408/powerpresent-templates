@@ -4,40 +4,349 @@
  * template service
  */
 
+//@ts-ignore
 const { createCoreService } = require('@strapi/strapi').factories;
+const fs = require('fs');
+const path = require('path');
 
 module.exports = createCoreService('api::template.template', ({ strapi }) => ({
-  // Custom service method to get template with all nested data
-  async findTemplateWithAllData(slug) {
-    return await strapi.entityService.findMany('api::template.template', {
-      filters: { slug },
+  cleanContent(content) {
+    return content
+      .replace(/\\n/g, '') // Remove \n
+      .replace(/\\/g, ''); // Remove backslashes before quotes
+  },
+
+  // Custom service method to get template by name with all nested data
+  async findTemplateByNameWithAllData(name) {
+    const templates = await strapi.entityService.findMany('api::template.template', {
+      filters: { name },
       populate: {
-        slide_types: {
+        slides: {
           populate: {
-            variants: {
+            elements: {
               populate: {
-                background_images: true,
+                background_element: {
+                  populate: {
+                    media: true,
+                  },
+                },
+                children: {
+                  populate: {
+                    children: {
+                      populate: {
+                        background_element: {
+                          populate: {
+                            media: true,
+                          },
+                        },
+                      },
+                    },
+                    background_element: {
+                      populate: {
+                        media: true,
+                      },
+                    },
+                  },
+                },
               },
             },
             background_image: true,
-            thumbnail: true,
           },
         },
-        thumbnail: true,
       },
     });
+
+    // Return the first template since name is unique
+    if (templates.length === 0) {
+      return null;
+    }
+
+    const template = templates[0];
+
+    // Generate combined HTML and SCSS for all slides
+    let combinedHTML = '';
+    let combinedSCSS = '';
+
+    template.slides.forEach((slide, slideIndex) => {
+      combinedHTML += this.generateSlideHTML(slide, slideIndex + 1, template.name);
+      combinedSCSS += this.generateSlideScss(slide, template.name);
+    });
+
+    // Save SCSS to file
+    await this.saveScssToFile(combinedSCSS, template.name);
+
+    console.log(this.cleanContent(combinedHTML));
+    // Return only the essential data with combined HTML and SCSS
+    return {
+      id: template.id,
+      name: template.name,
+      html: combinedHTML,
+      scss: combinedSCSS,
+    };
   },
 
-  // Custom service method to validate template structure
-  async validateTemplateStructure(templateData) {
-    const requiredFields = ['name', 'slug', 'template_type'];
+  // Helper method to generate HTML for a slide
+  generateSlideHTML(slide, slideNumber, templateName) {
+    const elements = slide.elements || [];
+    const slideType = slide.name;
+    const variant = slide.variant || 'default';
+    let htmlContent = '';
 
-    for (const field of requiredFields) {
-      if (!templateData[field]) {
-        throw new Error(`Missing required field: ${field}`);
+    // Process each element
+    elements.forEach((element) => {
+      const repeatCount = element.repeat || 1; // Default to 1 if no repeat specified
+
+      for (let i = 0; i < repeatCount; i++) {
+        if (element.type === 'group') {
+          // Group elements become <block-node>
+          htmlContent += '\n          <block-node>\n          ';
+          if (element.children) {
+            element.children.forEach((child) => {
+              const childRepeatCount = child.repeat || 1;
+
+              for (let j = 0; j < childRepeatCount; j++) {
+                if (child.type === 'group') {
+                  // Handle nested group elements
+                  htmlContent += '<block-node>\n          ';
+                  if (child.children) {
+                    child.children.forEach((grandChild) => {
+                      const grandChildRepeatCount = grandChild.repeat || 1;
+
+                      for (let k = 0; k < grandChildRepeatCount; k++) {
+                        htmlContent += this.generateElementHTML(grandChild) + '\n          ';
+                      }
+                    });
+                  }
+                  htmlContent += '</block-node>\n          ';
+                } else {
+                  htmlContent += this.generateElementHTML(child) + '\n          ';
+                }
+              }
+            });
+          }
+          htmlContent += '</block-node>';
+        } else if (element.type === 'background-element' && element.background_element) {
+          // Background elements become img with data-type
+          const position = element.background_element.position;
+          const mediaUrl = element.background_element.media?.url;
+          const altText = element.background_element.media?.alternativeText || 'Background Image';
+
+          if (mediaUrl) {
+            htmlContent += `\n          <img data-type='${position}-background' src="${mediaUrl}" alt="${altText}" />`;
+          }
+        } else {
+          // Other elements
+          htmlContent += '\n      ' + this.generateElementHTML(element);
+        }
+      }
+    });
+
+    // Generate the complete slide HTML with proper formatting for TipTap
+    const backgroundColor = slide.background_color || '#ffffff';
+
+    return `<slide-node data-slide-number="${slideNumber}">
+        <data-node style="background-color: ${backgroundColor};" data-template="${templateName}" data-type="${slideType}" data-variant="${variant}" data-slide-number="${slideNumber}">
+          ${htmlContent}
+        </data-node>
+      </slide-node>\n`;
+  },
+
+  // Helper method to generate HTML for individual elements
+  generateElementHTML(element) {
+    switch (element.type) {
+      case 'heading1':
+        return '<h1>Heading # 1</h1>';
+      case 'heading2':
+        return '<h2>Heading # 2</h2>';
+      case 'heading3':
+        return '<h3>Heading # 3</h3>';
+      case 'heading4':
+        return '<h4>Heading # 4</h4>';
+      case 'paragraph':
+        return '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit...</p>';
+      case 'un-ordered-bullets':
+      case 'ordered-bullets':
+        const listType = element.type === 'ordered-bullets' ? 'ol' : 'ul';
+        return `<${listType}>
+        <li>Heading # 4</li>
+        <li>Heading # 4</li>
+        <li>Heading # 4</li>
+        <li>Heading # 4</li>
+        <li>Heading # 4</li>
+      </${listType}>`;
+      case 'image':
+        return '<img src="/assets/placeholder.png" alt="Product Demo" />';
+      case 'shape':
+        return '<shape-node></shape-node>';
+      default:
+        return '';
+    }
+  },
+
+  // Helper method to generate SCSS for a slide
+  generateSlideScss(slide, templateName) {
+    const slideType = slide.name;
+    const variant = slide.variant || 'default';
+    const backgroundColor = slide.background_color || '#ffffff';
+
+    let scss = `&.type-${slideType} {\n`;
+    scss += `  &.variant-${variant} {\n`;
+    scss += `    .data-node-content {\n`;
+    scss += `      background-color: ${backgroundColor};\n`;
+    scss += `      >div[data-node-view-content-react][data-node-view-wrapper] {\n`;
+
+    // Add slide-level styles if present
+    if (slide.style && typeof slide.style === 'object') {
+      const slideStyles = this.convertStyleObjectToCSS(slide.style);
+      if (slideStyles) {
+        scss += `        ${slideStyles}\n`;
       }
     }
 
-    return true;
+    // Process elements and their styles
+    const elements = slide.elements || [];
+    elements.forEach((element) => {
+      if (element.type === 'group' && element.children) {
+        // Process group element styles
+        if (element.style && typeof element.style === 'object') {
+          const groupStyles = this.convertStyleObjectToCSS(element.style);
+          if (groupStyles) {
+            scss += `        .tiptap-block-node {\n          ${groupStyles}\n        }\n`;
+          }
+        }
+
+        // Process children elements
+        element.children.forEach((child) => {
+          if (child.type === 'group' && child.children) {
+            // Handle nested group element styles
+            if (child.style && typeof child.style === 'object') {
+              const nestedGroupStyles = this.convertStyleObjectToCSS(child.style);
+              if (nestedGroupStyles) {
+                scss += `        .tiptap-block-node {\n          ${nestedGroupStyles}\n        }\n`;
+              }
+            }
+
+            // Process grandchildren elements
+            child.children.forEach((grandChild) => {
+              scss += this.generateElementScss(grandChild);
+            });
+          } else {
+            scss += this.generateElementScss(child);
+          }
+        });
+      } else {
+        // Process regular elements
+        scss += this.generateElementScss(element);
+      }
+    });
+
+    scss += '\n      }\n';
+    scss += '    }\n';
+    scss += '  }\n';
+    scss += '}';
+    return scss;
+  },
+
+  // Helper method to generate SCSS for individual elements
+  generateElementScss(element) {
+    if (!element.style || typeof element.style !== 'object') {
+      return '';
+    }
+
+    const elementStyles = this.convertStyleObjectToCSS(element.style);
+    if (!elementStyles) {
+      return '';
+    }
+
+    let selector = '';
+
+    // Check if custom_style_node is present, use it instead of switch statement
+    if (element.custom_style_node && typeof element.custom_style_node === 'string') {
+      selector = element.custom_style_node;
+    } else {
+      // Use default selectors based on element type
+      switch (element.type) {
+        case 'heading1':
+          selector = '.node-heading:has(h1)';
+          break;
+        case 'heading2':
+          selector = '.node-heading:has(h2)';
+          break;
+        case 'heading3':
+          selector = '.node-heading:has(h3)';
+          break;
+        case 'heading4':
+          selector = '.node-heading:has(h4)';
+          break;
+        case 'paragraph':
+          selector = '.node-paragraph';
+          break;
+        case 'un-ordered-bullets':
+          selector = '.node-bulletList';
+          break;
+        case 'ordered-bullets':
+          selector = '.node-bulletList';
+          break;
+        case 'image':
+          selector = '.node-image';
+          break;
+        case 'shape':
+          selector = '.tiptap-shape-node';
+          break;
+        default:
+          return '';
+      }
+    }
+
+    return `        ${selector} {\n          ${elementStyles}\n        }\n`;
+  },
+
+  // Helper method to convert style object to CSS string
+  convertStyleObjectToCSS(styleObj) {
+    if (!styleObj || typeof styleObj !== 'object') {
+      return '';
+    }
+
+    return Object.entries(styleObj)
+      .map(([key, value]) => {
+        // Convert camelCase to kebab-case
+        const cssKey = key.replace(/([A-Z])/g, '-$1').toLowerCase();
+
+        // Handle nested objects (like li styles)
+        if (typeof value === 'object' && value !== null) {
+          const nestedStyles = this.convertStyleObjectToCSS(value);
+          if (nestedStyles) {
+            return `${cssKey} {\n            ${nestedStyles}\n          }`;
+          }
+          return '';
+        }
+
+        return `${cssKey}: ${value};`;
+      })
+      .filter((style) => style !== '') // Remove empty styles
+      .join('\n          ');
+  },
+
+  // Helper method to save SCSS to file
+  async saveScssToFile(scssContent, templateName) {
+    try {
+      // Create styles directory if it doesn't exist
+      const stylesDir = path.join(process.cwd(), 'public', 'styles');
+      if (!fs.existsSync(stylesDir)) {
+        fs.mkdirSync(stylesDir, { recursive: true });
+      }
+
+      // Save SCSS file
+      const fileName = `${templateName}-template.scss`;
+      const filePath = path.join(stylesDir, fileName);
+
+      fs.writeFileSync(filePath, scssContent, 'utf8');
+
+      strapi.log.info(`SCSS file saved: ${filePath}`);
+      return filePath;
+    } catch (error) {
+      strapi.log.error('Error saving SCSS file:', error);
+      throw error;
+    }
   },
 }));

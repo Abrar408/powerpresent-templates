@@ -1,0 +1,106 @@
+&.type-title-slide {
+  &.variant-default {
+    .data-node-content {
+      background-color: #18072B;
+      >div[data-node-view-content-react][data-node-view-wrapper] {
+        .tiptap-block-node {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+        }
+        .node-heading:has(h1) {
+          padding: clamp(4px, 1vw, 10px);
+          width: fit-content;
+          height: fit-content;
+          color: white;
+          text-align: center;
+          margin-bottom: clamp(8px, 2vw, 16px);
+          white-space: nowrap;
+        }
+        .node-heading:has(h4) {
+          padding: clamp(4px, 1vw, 10px);
+          width: fit-content;
+          height: fit-content;
+          color: white;
+          text-align: center;
+        }
+
+      }
+    }
+  }
+}&.type-agenda-slide {
+  &.variant-default {
+    .data-node-content {
+      background-color: #18072B;
+      >div[data-node-view-content-react][data-node-view-wrapper] {
+        display: grid;
+          grid-template-columns: 37% 1fr;
+          grid-template-rows: 1fr;
+        .node-list:has(ul) {
+          grid-column: 2;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          list-style: none;
+          padding: clamp(12.5px, 4vw, 50px);
+          margin: 0;
+          li {
+            display: flex;
+          align-items: center;
+          gap: clamp(4px, 1vw, 16px);
+          span {
+            background-color: white;
+          }
+          h4 {
+            color: white;
+          }
+          p {
+            color: white;
+          font-size: clamp(8px, 2.5vw, 32px);
+          }
+          position: relative;
+          padding: clamp(4px, 1vw, 16px) 0 clamp(4px, 1vw, 16px) clamp(12px, 4vw, 48px);
+          margin: 0;
+          font-size: clamp(8px, 2.5vw, 32px);
+          font-weight: 600;
+          color: white;
+          }
+        }
+
+      }
+    }
+  }
+}&.type-accent-image-slide {
+  &.variant-default {
+    .data-node-content {
+      background-color: #ffffff;
+      >div[data-node-view-content-react][data-node-view-wrapper] {
+        display: grid;
+          align-items: center;
+          grid-template-columns: 37% 1fr;
+        .tiptap-block-node {
+          padding-right: 0;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+        }
+        .node-heading:has(h2) {
+          background-image: linear-gradient(to right, #b417e4, #4298ea);
+          color: white;
+          margin: 0 0 clamp(6px, 2vw, 25px) 0;
+        }
+        .node-paragraph:has(p) {
+          color: black;
+          padding-right: clamp(12.5px, 4vw, 50px);
+          margin-bottom: clamp(12.5px, 4vw, 50px);
+        }
+        .node-shape:has(shape-node) {
+          height: clamp(2px, 1vw, 8px);
+          background: linear-gradient(to right, #3ec4f7, #5faef4, #a682ef, #c371ed);
+        }
+
+      }
+    }
+  }
+}

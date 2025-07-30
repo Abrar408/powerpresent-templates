@@ -18,6 +18,7 @@
         "un-ordered-bullets",
         "image",
         "shape",
+        "group",
         "background-element"
       ]
     },
@@ -38,6 +39,27 @@
       },
       "component": "shared.background-element",
       "repeatable": false
+    },
+    "children": {
+      "type": "component",
+      "conditions": {
+        "visible": {
+          "==": [
+            {
+              "var": "type"
+            },
+            "group"
+          ]
+        }
+      },
+      "component": "shared.nested-child-element",
+      "repeatable": true
+    },
+    "repeat": {
+      "type": "integer"
+    },
+    "custom_style_node": {
+      "type": "string"
     }
   }
 }

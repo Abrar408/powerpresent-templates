@@ -21,6 +21,9 @@ export interface SharedChildElement extends Struct.ComponentSchema {
       'shared.background-element',
       false
     >;
+    children: Schema.Attribute.Component<'shared.nested-child-element', true>;
+    custom_style_node: Schema.Attribute.String;
+    repeat: Schema.Attribute.Integer;
     style: Schema.Attribute.JSON;
     type: Schema.Attribute.Enumeration<
       [
@@ -33,6 +36,7 @@ export interface SharedChildElement extends Struct.ComponentSchema {
         'un-ordered-bullets',
         'image',
         'shape',
+        'group',
         'background-element',
       ]
     > &
@@ -51,6 +55,8 @@ export interface SharedElement extends Struct.ComponentSchema {
       false
     >;
     children: Schema.Attribute.Component<'shared.child-element', true>;
+    custom_style_node: Schema.Attribute.String;
+    repeat: Schema.Attribute.Integer;
     style: Schema.Attribute.JSON;
     type: Schema.Attribute.Enumeration<
       [
@@ -79,6 +85,37 @@ export interface SharedMedia extends Struct.ComponentSchema {
   };
   attributes: {
     file: Schema.Attribute.Media<'images' | 'files' | 'videos'>;
+  };
+}
+
+export interface SharedNestedChildElement extends Struct.ComponentSchema {
+  collectionName: 'components_shared_nested_child_elements';
+  info: {
+    displayName: 'Nested Child Element';
+  };
+  attributes: {
+    background_element: Schema.Attribute.Component<
+      'shared.background-element',
+      false
+    >;
+    custom_style_node: Schema.Attribute.String;
+    repeat: Schema.Attribute.Integer;
+    style: Schema.Attribute.JSON;
+    type: Schema.Attribute.Enumeration<
+      [
+        'heading1',
+        'heading2',
+        'heading3',
+        'heading4',
+        'paragraph',
+        'ordered-bullets',
+        'un-ordered-bullets',
+        'image',
+        'shape',
+        'background-element',
+      ]
+    > &
+      Schema.Attribute.Required;
   };
 }
 
@@ -140,6 +177,7 @@ declare module '@strapi/strapi' {
       'shared.child-element': SharedChildElement;
       'shared.element': SharedElement;
       'shared.media': SharedMedia;
+      'shared.nested-child-element': SharedNestedChildElement;
       'shared.quote': SharedQuote;
       'shared.rich-text': SharedRichText;
       'shared.seo': SharedSeo;

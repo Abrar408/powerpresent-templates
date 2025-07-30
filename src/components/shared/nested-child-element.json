@@ -1,7 +1,7 @@
 {
-  "collectionName": "components_shared_elements",
+  "collectionName": "components_shared_nested_child_elements",
   "info": {
-    "displayName": "Element"
+    "displayName": "Nested Child Element"
   },
   "options": {},
   "attributes": {
@@ -18,27 +18,11 @@
         "un-ordered-bullets",
         "image",
         "shape",
-        "group",
         "background-element"
       ]
     },
     "style": {
       "type": "json"
-    },
-    "children": {
-      "type": "component",
-      "conditions": {
-        "visible": {
-          "==": [
-            {
-              "var": "type"
-            },
-            "group"
-          ]
-        }
-      },
-      "component": "shared.child-element",
-      "repeatable": true
     },
     "background_element": {
       "type": "component",
