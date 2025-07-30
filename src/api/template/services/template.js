@@ -69,13 +69,27 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
 
     template.slides.forEach((slide, slideIndex) => {
       combinedHTML += this.generateSlideHTML(slide, slideIndex + 1, template.name);
+
       combinedSCSS += this.generateSlideScss(slide, template.name);
     });
 
-    // Save SCSS to file
-    await this.saveScssToFile(combinedSCSS, template.name);
+    const scssWithStructure = `.tiptap.ProseMirror {
+  .node-dataNode {
+    display: block;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    /* Default styling */
+    background-color: transparent;
 
-    console.log(this.cleanContent(combinedHTML));
+    .tiptap-data-node {
+    &.template-${template.name} {\n ${combinedSCSS}\n}
+    }}}`;
+
+    // Save SCSS to file
+    await this.saveScssToFile(scssWithStructure, template.name);
+
     // Return only the essential data with combined HTML and SCSS
     return {
       id: template.id,
@@ -132,7 +146,7 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
           const altText = element.background_element.media?.alternativeText || 'Background Image';
 
           if (mediaUrl) {
-            htmlContent += `\n          <img data-type='${position}-background' src="${mediaUrl}" alt="${altText}" />`;
+            htmlContent += `\n          <img data-type='${position}-background' src="${process.env.MEDIA_URL}${mediaUrl}" alt="${altText}" />`;
           }
         } else {
           // Other elements
@@ -163,7 +177,7 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
       case 'heading4':
         return '<h4>Heading # 4</h4>';
       case 'paragraph':
-        return '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit...</p>';
+        return '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis eu dolor nec magna varius laoreet. Aenean rhoncus elit tortor, vitae gravida ipsum vestibulum ut. Aenean accumsan non ipsum ac feugiat. Cras vitae sem lobortis, cursus felis sed, luctus sapien. Aliquam iaculis mauris vitae dui rhoncus, et accumsan nunc fin  vitae gravida ipsum vestibulum ut. Aenean accumsan non ipsum ac </p>';
       case 'un-ordered-bullets':
       case 'ordered-bullets':
         const listType = element.type === 'ordered-bullets' ? 'ol' : 'ul';
@@ -211,29 +225,28 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
         if (element.style && typeof element.style === 'object') {
           const groupStyles = this.convertStyleObjectToCSS(element.style);
           if (groupStyles) {
-            scss += `        .tiptap-block-node {\n          ${groupStyles}\n        }\n`;
-          }
-        }
+            scss += `        .tiptap-block-node {\n          ${groupStyles}`;
 
-        // Process children elements
-        element.children.forEach((child) => {
-          if (child.type === 'group' && child.children) {
-            // Handle nested group element styles
-            if (child.style && typeof child.style === 'object') {
-              const nestedGroupStyles = this.convertStyleObjectToCSS(child.style);
-              if (nestedGroupStyles) {
-                scss += `        .tiptap-block-node {\n          ${nestedGroupStyles}\n        }\n`;
-              }
+            // Process children elements within this group
+            const childrenScss = this.generateChildrenScss(element.children, '          ');
+            if (childrenScss) {
+              scss += `\n${childrenScss}`;
             }
 
-            // Process grandchildren elements
-            child.children.forEach((grandChild) => {
-              scss += this.generateElementScss(grandChild);
-            });
-          } else {
-            scss += this.generateElementScss(child);
+            scss += '\n        }\n';
           }
-        });
+        } else {
+          // Group without styles but with children
+          scss += `        .tiptap-block-node {\n`;
+
+          // Process children elements within this group
+          const childrenScss = this.generateChildrenScss(element.children, '          ');
+          if (childrenScss) {
+            scss += `${childrenScss}`;
+          }
+
+          scss += '        }\n';
+        }
       } else {
         // Process regular elements
         scss += this.generateElementScss(element);
@@ -247,6 +260,55 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
     return scss;
   },
 
+  // Helper method to generate SCSS for children elements with proper nesting
+  generateChildrenScss(children, indentation = '        ') {
+    let childrenScss = '';
+
+    children.forEach((child) => {
+      if (child.type === 'group' && child.children) {
+        // Handle nested group
+        if (child.style && typeof child.style === 'object') {
+          const nestedGroupStyles = this.convertStyleObjectToCSS(child.style);
+          if (nestedGroupStyles) {
+            childrenScss += `\n${indentation}  .tiptap-block-node {\n${indentation}    ${nestedGroupStyles.replace(/\n          /g, `\n${indentation}    `)}`;
+
+            // Recursively process grandchildren
+            const grandChildrenScss = this.generateChildrenScss(child.children, indentation + '    ');
+            if (grandChildrenScss) {
+              childrenScss += `${grandChildrenScss}`;
+            }
+
+            childrenScss += `\n${indentation}  }`;
+          }
+        } else {
+          // Group without styles but with children
+          childrenScss += `\n${indentation}  .tiptap-block-node {`;
+
+          const grandChildrenScss = this.generateChildrenScss(child.children, indentation + '    ');
+          if (grandChildrenScss) {
+            childrenScss += `${grandChildrenScss}`;
+          }
+
+          childrenScss += `\n${indentation}  }`;
+        }
+      } else {
+        // Handle regular child elements
+        if (child.style && typeof child.style === 'object') {
+          const elementStyles = this.convertStyleObjectToCSS(child.style);
+          if (elementStyles) {
+            const selector = this.getSelectorForElement(child);
+
+            if (selector) {
+              childrenScss += `\n\n${indentation}  ${selector} {\n${indentation}    ${elementStyles.replace(/\n          /g, `\n${indentation}    `)}\n${indentation}  }`;
+            }
+          }
+        }
+      }
+    });
+
+    return childrenScss;
+  },
+
   // Helper method to generate SCSS for individual elements
   generateElementScss(element) {
     if (!element.style || typeof element.style !== 'object') {
@@ -258,45 +320,7 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
       return '';
     }
 
-    let selector = '';
-
-    // Check if custom_style_node is present, use it instead of switch statement
-    if (element.custom_style_node && typeof element.custom_style_node === 'string') {
-      selector = element.custom_style_node;
-    } else {
-      // Use default selectors based on element type
-      switch (element.type) {
-        case 'heading1':
-          selector = '.node-heading:has(h1)';
-          break;
-        case 'heading2':
-          selector = '.node-heading:has(h2)';
-          break;
-        case 'heading3':
-          selector = '.node-heading:has(h3)';
-          break;
-        case 'heading4':
-          selector = '.node-heading:has(h4)';
-          break;
-        case 'paragraph':
-          selector = '.node-paragraph';
-          break;
-        case 'un-ordered-bullets':
-          selector = '.node-bulletList';
-          break;
-        case 'ordered-bullets':
-          selector = '.node-bulletList';
-          break;
-        case 'image':
-          selector = '.node-image';
-          break;
-        case 'shape':
-          selector = '.tiptap-shape-node';
-          break;
-        default:
-          return '';
-      }
-    }
+    const selector = this.getSelectorForElement(element);
 
     return `        ${selector} {\n          ${elementStyles}\n        }\n`;
   },
@@ -347,6 +371,36 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
     } catch (error) {
       strapi.log.error('Error saving SCSS file:', error);
       throw error;
+    }
+  },
+
+  getSelectorForElement(element) {
+    if (element.custom_style_node && typeof element.custom_style_node === 'string') {
+      return element.custom_style_node;
+    }
+
+    // Use default selectors based on element type
+    switch (element.type) {
+      case 'heading1':
+        return '.node-heading:has(h1)';
+      case 'heading2':
+        return '.node-heading:has(h2)';
+      case 'heading3':
+        return '.node-heading:has(h3)';
+      case 'heading4':
+        return '.node-heading:has(h4)';
+      case 'paragraph':
+        return '.node-paragraph';
+      case 'un-ordered-bullets':
+        return 'ul';
+      case 'ordered-bullets':
+        return 'ol';
+      case 'image':
+        return '.node-image';
+      case 'shape':
+        return '.tiptap-shape-node';
+      default:
+        return '';
     }
   },
 }));
