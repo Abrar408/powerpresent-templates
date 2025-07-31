@@ -9,11 +9,11 @@
     background-color: transparent;
 
     .tiptap-data-node {
-    &.template-celeste {
+    &.template-lumen {
  &.type-title-slide {
   &.variant-top-image {
     .data-node-content {
-      background-color: #18072B;
+      background-color: #FAFAFA;
       >div[data-node-view-content-react][data-node-view-wrapper] {
         .tiptap-block-node {
           display: flex;
@@ -26,7 +26,7 @@
               padding: clamp(4px, 1vw, 10px);
               width: fit-content;
               height: fit-content;
-              color: white;
+              color: #242725;
               text-align: center;
               margin-bottom: clamp(8px, 2vw, 16px);
               white-space: nowrap;
@@ -36,7 +36,7 @@
               padding: clamp(4px, 1vw, 10px);
               width: fit-content;
               height: fit-content;
-              color: white;
+              color: #2ED47B;
               text-align: center;
             }
         }
@@ -47,7 +47,7 @@
 }&.type-agenda-slide {
   &.variant-left-image {
     .data-node-content {
-      background-color: #18072B;
+      background-color: #FFFFFF;
       >div[data-node-view-content-react][data-node-view-wrapper] {
         display: grid;
           grid-template-columns: 37% 1fr;
@@ -65,21 +65,17 @@
           align-items: center;
           gap: clamp(4px, 1vw, 16px);
           span {
-            background-color: white;
-          }
-          h4 {
-            color: white;
+            background-color: #2ED47B;
           }
           p {
-            color: white;
-          font-size: clamp(8px, 2.5vw, 32px) !important;
+            font-size: clamp(8px, 2.5vw, 32px) !important;
           }
           position: relative;
           padding: clamp(4px, 1vw, 16px) 0 clamp(4px, 1vw, 16px) clamp(12px, 4vw, 48px);
           margin: 0;
           font-size: clamp(8px, 2.5vw, 32px);
           font-weight: 600;
-          color: white;
+          color: #242725;
           }
         }
 
@@ -102,20 +98,14 @@
 
 
             .node-heading:has(h2) {
-              background-image: linear-gradient(to right, #b417e4, #4298ea);
-              color: white;
+              color: #242725;
               margin: 0 0 clamp(6px, 2vw, 25px) 0;
             }
 
             .node-paragraph {
-              color: black;
+              color: #242725;
               padding-right: clamp(12.5px, 4vw, 50px);
               margin-bottom: clamp(12.5px, 4vw, 50px);
-            }
-
-            .node-shapeNode {
-              height: clamp(2px, 1vw, 8px);
-              background: linear-gradient(to right, #3ec4f7, #5faef4, #a682ef, #c371ed);
             }
         }
 
@@ -135,7 +125,7 @@
 
 
             .node-heading:has(h1) {
-              color: black;
+              color: #242725;
               display: flex;
               justify-content: center;
               text-align: center;
@@ -143,7 +133,7 @@
             }
 
             .node-paragraph {
-              color: black;
+              color: #242725;
               padding: 0 clamp(12.5px, 4vw, 50px);
             }
         }
@@ -158,19 +148,8 @@
       >div[data-node-view-content-react][data-node-view-wrapper] {
         padding: clamp(12.5px, 4vw, 50px) 0;
         .node-heading:has(h1) {
-          color: #3ec4f7;
+          color: #242725;
           padding-left: clamp(12.5px, 4vw, 50px);
-        }
-        .node-shapeNode:nth-of-type(2) {
-          width: 80%;
-          height: clamp(1px, 0.5vw, 4px);
-          margin-bottom: clamp(1px, 0.5vw, 4px);
-          background: linear-gradient(to right, #3ec4f7, #5faef4, #a682ef, #c371ed);
-        }
-        .node-shapeNode:nth-of-type(3) {
-          width: 70%;
-          height: clamp(1px, 0.5vw, 4px);
-          background: linear-gradient(to right, #3ec4f7, #5faef4, #a682ef, #c371ed);
         }
         .tiptap-block-node {
           display: grid;
@@ -188,7 +167,7 @@
 
                 .node-heading:has(h4) {
                   font-weight: bold;
-                  color: black;
+                  color: #2ED47B;
                   display: flex;
                   justify-content: left;
                   margin-bottom: clamp(6px, 2vw, 24px);
@@ -196,7 +175,7 @@
 
                 .node-paragraph {
                   margin: 0;
-                  color: black;
+                  color: #242725;
                 }
             }
         }
@@ -211,19 +190,8 @@
       >div[data-node-view-content-react][data-node-view-wrapper] {
         padding: clamp(12.5px, 4vw, 50px) 0;
         .node-heading:has(h1) {
-          color: #3ec4f7;
+          color: #242725;
           padding-left: clamp(12.5px, 4vw, 50px);
-        }
-        .node-shapeNode:nth-of-type(2) {
-          width: 80%;
-          height: clamp(1px, 0.5vw, 4px);
-          margin-bottom: clamp(1px, 0.5vw, 4px);
-          background: linear-gradient(to right, #3ec4f7, #5faef4, #a682ef, #c371ed);
-        }
-        .node-shapeNode:nth-of-type(3) {
-          width: 70%;
-          height: clamp(1px, 0.5vw, 4px);
-          background: linear-gradient(to right, #3ec4f7, #5faef4, #a682ef, #c371ed);
         }
         ul {
           list-style: none;
@@ -231,12 +199,14 @@
           li {
             display: flex;
           align-items: start;
-          gap: 0 clamp(7px, 2vw, 16px);
+          gap: 0 clamp(7px, 2vw, 32px);
           margin-bottom: clamp(7px, 2vw, 16px);
-          color: black;
+          color: #242725;
           span {
-            margin-top: clamp(1px, 0.3vw, 4px);
-          background-image: linear-gradient(to right, #b417e4, #4298ea);
+            width: clamp(6px, 2vw, 12px) !important;
+          height: clamp(6px, 2vw, 12px) !important;
+          background-color: #2ED47B;
+          margin-top: clamp(3px, 1vw, 12px);
           }
           p {
             font-size: clamp(6px, 1.8vw, 20px) !important;
@@ -250,7 +220,7 @@
 }&.type-image-formats-slide {
   &.variant-square-image {
     .data-node-content {
-      background-color: #18072B;
+      background-color: #ffffff;
       >div[data-node-view-content-react][data-node-view-wrapper] {
         display: grid;
           justify-content: center;
@@ -274,11 +244,11 @@
             }
 
             .node-heading:has(h4) {
-              color: #3ec4f7;
+              color: #2ED47B;
             }
 
             .node-paragraph {
-              color: white;
+              color: #242725;
               height: fit-content;
             }
         }

@@ -398,7 +398,7 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
       case 'image':
         return '.node-image';
       case 'shape':
-        return '.tiptap-shape-node';
+        return '.node-shapeNode';
       default:
         return '';
     }

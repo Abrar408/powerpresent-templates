@@ -8,18 +8,22 @@
     "media": {
       "type": "media",
       "multiple": false,
-      "allowedTypes": [
-        "images",
-        "files",
-        "videos",
-        "audios"
-      ]
+      "allowedTypes": ["images", "files", "videos", "audios"]
     },
     "position": {
       "type": "enumeration",
       "enum": [
         "left",
-        "right"
+        "right",
+        "top",
+        "bottom",
+        "top-left",
+        "top-right",
+        "bottom-left",
+        "bottom-right",
+        "center",
+        "cover",
+        "contain"
       ]
     }
   },

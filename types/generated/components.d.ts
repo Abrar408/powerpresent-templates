@@ -7,7 +7,21 @@ export interface SharedBackgroundElement extends Struct.ComponentSchema {
   };
   attributes: {
     media: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
-    position: Schema.Attribute.Enumeration<['left', 'right']>;
+    position: Schema.Attribute.Enumeration<
+      [
+        'left',
+        'right',
+        'top',
+        'bottom',
+        'top-left',
+        'top-right',
+        'bottom-left',
+        'bottom-right',
+        'center',
+        'cover',
+        'contain',
+      ]
+    >;
   };
 }
 
