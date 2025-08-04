@@ -1,7 +1,7 @@
 {
-  "collectionName": "components_shared_nested_child_elements",
+  "collectionName": "components_shared_deep_nested_child_elements",
   "info": {
-    "displayName": "Nested Child Element"
+    "displayName": "Deep Nested Child Element"
   },
   "options": {},
   "attributes": {
@@ -18,7 +18,6 @@
         "un-ordered-bullets",
         "image",
         "shape",
-        "group",
         "background-element"
       ]
     },
@@ -45,21 +44,6 @@
     },
     "custom_style_node": {
       "type": "string"
-    },
-    "children": {
-      "type": "component",
-      "conditions": {
-        "visible": {
-          "==": [
-            {
-              "var": "type"
-            },
-            "group"
-          ]
-        }
-      },
-      "component": "shared.deep-nested-child-element",
-      "repeatable": true
     }
   }
 }

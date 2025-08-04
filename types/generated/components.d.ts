@@ -58,6 +58,37 @@ export interface SharedChildElement extends Struct.ComponentSchema {
   };
 }
 
+export interface SharedDeepNestedChildElement extends Struct.ComponentSchema {
+  collectionName: 'components_shared_deep_nested_child_elements';
+  info: {
+    displayName: 'Deep Nested Child Element';
+  };
+  attributes: {
+    background_element: Schema.Attribute.Component<
+      'shared.background-element',
+      false
+    >;
+    custom_style_node: Schema.Attribute.String;
+    repeat: Schema.Attribute.Integer;
+    style: Schema.Attribute.JSON;
+    type: Schema.Attribute.Enumeration<
+      [
+        'heading1',
+        'heading2',
+        'heading3',
+        'heading4',
+        'paragraph',
+        'ordered-bullets',
+        'un-ordered-bullets',
+        'image',
+        'shape',
+        'background-element',
+      ]
+    > &
+      Schema.Attribute.Required;
+  };
+}
+
 export interface SharedElement extends Struct.ComponentSchema {
   collectionName: 'components_shared_elements';
   info: {
@@ -112,6 +143,10 @@ export interface SharedNestedChildElement extends Struct.ComponentSchema {
       'shared.background-element',
       false
     >;
+    children: Schema.Attribute.Component<
+      'shared.deep-nested-child-element',
+      true
+    >;
     custom_style_node: Schema.Attribute.String;
     repeat: Schema.Attribute.Integer;
     style: Schema.Attribute.JSON;
@@ -126,6 +161,7 @@ export interface SharedNestedChildElement extends Struct.ComponentSchema {
         'un-ordered-bullets',
         'image',
         'shape',
+        'group',
         'background-element',
       ]
     > &
@@ -189,6 +225,7 @@ declare module '@strapi/strapi' {
     export interface ComponentSchemas {
       'shared.background-element': SharedBackgroundElement;
       'shared.child-element': SharedChildElement;
+      'shared.deep-nested-child-element': SharedDeepNestedChildElement;
       'shared.element': SharedElement;
       'shared.media': SharedMedia;
       'shared.nested-child-element': SharedNestedChildElement;
