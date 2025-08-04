@@ -31,9 +31,21 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
                   },
                 },
                 children: {
+                  // Populate child elements
                   populate: {
                     children: {
+                      // Populate nested-child elements
                       populate: {
+                        children: {
+                          // Populate deep-nested-child elements
+                          populate: {
+                            background_element: {
+                              populate: {
+                                media: true,
+                              },
+                            },
+                          },
+                        },
                         background_element: {
                           populate: {
                             media: true,
@@ -56,11 +68,11 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
       },
     });
 
-    // Return the first template since name is unique
     if (templates.length === 0) {
       return null;
     }
 
+    // Return the first template since name is unique
     const template = templates[0];
 
     // Generate combined HTML and SCSS for all slides
@@ -90,6 +102,7 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
     // Save SCSS to file
     await this.saveScssToFile(scssWithStructure, template.name);
 
+    console.log(this.cleanContent(combinedHTML));
     // Return only the essential data with combined HTML and SCSS
     return {
       id: template.id,
@@ -115,28 +128,7 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
           // Group elements become <block-node>
           htmlContent += '\n          <block-node>\n          ';
           if (element.children) {
-            element.children.forEach((child) => {
-              const childRepeatCount = child.repeat || 1;
-
-              for (let j = 0; j < childRepeatCount; j++) {
-                if (child.type === 'group') {
-                  // Handle nested group elements
-                  htmlContent += '<block-node>\n          ';
-                  if (child.children) {
-                    child.children.forEach((grandChild) => {
-                      const grandChildRepeatCount = grandChild.repeat || 1;
-
-                      for (let k = 0; k < grandChildRepeatCount; k++) {
-                        htmlContent += this.generateElementHTML(grandChild) + '\n          ';
-                      }
-                    });
-                  }
-                  htmlContent += '</block-node>\n          ';
-                } else {
-                  htmlContent += this.generateElementHTML(child) + '\n          ';
-                }
-              }
-            });
+            htmlContent += this.generateChildrenHTML(element.children, '          ', i + 1);
           }
           htmlContent += '</block-node>';
         } else if (element.type === 'background-element' && element.background_element) {
@@ -148,6 +140,8 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
           if (mediaUrl) {
             htmlContent += `\n          <img data-type='${position}-background' src="${process.env.MEDIA_URL}${mediaUrl}" alt="${altText}" />`;
           }
+        } else if (element.type === 'paragraph' && element.data_type === 'numbered-bullet') {
+          htmlContent += `<p>${i + 1}</p>`;
         } else {
           // Other elements
           htmlContent += '\n      ' + this.generateElementHTML(element);
@@ -165,6 +159,42 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
       </slide-node>\n`;
   },
 
+  // Helper method to recursively generate HTML for children elements
+  generateChildrenHTML(children, indentation = '          ', parentRepeatNumber) {
+    let childrenHTML = '';
+
+    children.forEach((child) => {
+      const childRepeatCount = child.repeat || 1;
+
+      for (let i = 0; i < childRepeatCount; i++) {
+        if (child.type === 'group') {
+          // Handle nested group elements
+          childrenHTML += `<block-node>\n${indentation}`;
+          if (child.children) {
+            childrenHTML += this.generateChildrenHTML(child.children, indentation + '  ', i + 1);
+          }
+          childrenHTML += `</block-node>\n${indentation}`;
+        } else if (child.type === 'background-element' && child.background_element) {
+          // Background elements become img with data-type
+          const position = child.background_element.position;
+          const mediaUrl = child.background_element.media?.url;
+          const altText = child.background_element.media?.alternativeText || 'Background Image';
+
+          if (mediaUrl) {
+            childrenHTML += `\n          <img data-type='${position}-background' src="${process.env.MEDIA_URL}${mediaUrl}" alt="${altText}" />`;
+          }
+        } else if (child.type === 'paragraph' && child.data_type === 'numbered-bullet') {
+          childrenHTML += `<p>${parentRepeatNumber}</p>`;
+        } else {
+          // Handle regular child elements
+          childrenHTML += this.generateElementHTML(child) + `\n${indentation}`;
+        }
+      }
+    });
+
+    return childrenHTML;
+  },
+
   // Helper method to generate HTML for individual elements
   generateElementHTML(element) {
     switch (element.type) {
@@ -177,7 +207,7 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
       case 'heading4':
         return '<h4>Heading # 4</h4>';
       case 'paragraph':
-        return '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis eu dolor nec magna varius laoreet. Aenean rhoncus elit tortor, vitae gravida ipsum vestibulum ut. Aenean accumsan non ipsum ac feugiat. Cras vitae sem lobortis, cursus felis sed, luctus sapien. Aliquam iaculis mauris vitae dui rhoncus, et accumsan nunc fin  vitae gravida ipsum vestibulum ut. Aenean accumsan non ipsum ac </p>';
+        return '<p>Lorem ipsum dolor sit amet...</p>';
       case 'un-ordered-bullets':
       case 'ordered-bullets':
         const listType = element.type === 'ordered-bullets' ? 'ol' : 'ul';

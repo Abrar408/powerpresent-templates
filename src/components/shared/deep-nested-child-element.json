@@ -44,6 +44,20 @@
     },
     "custom_style_node": {
       "type": "string"
+    },
+    "data_type": {
+      "type": "enumeration",
+      "conditions": {
+        "visible": {
+          "==": [
+            {
+              "var": "type"
+            },
+            "paragraph"
+          ]
+        }
+      },
+      "enum": ["numbered-bullet", "icon"]
     }
   }
 }

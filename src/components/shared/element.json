@@ -14,10 +14,10 @@
         "heading3",
         "heading4",
         "paragraph",
+        "span",
         "ordered-bullets",
         "un-ordered-bullets",
         "image",
-        "shape",
         "group",
         "background-element"
       ]
@@ -60,6 +60,20 @@
     },
     "custom_style_node": {
       "type": "string"
+    },
+    "data_type": {
+      "type": "enumeration",
+      "conditions": {
+        "visible": {
+          "==": [
+            {
+              "var": "type"
+            },
+            "paragraph"
+          ]
+        }
+      },
+      "enum": ["numbered-bullet", "icon"]
     }
   }
 }

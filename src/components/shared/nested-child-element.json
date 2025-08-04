@@ -60,6 +60,20 @@
       },
       "component": "shared.deep-nested-child-element",
       "repeatable": true
+    },
+    "data_type": {
+      "type": "enumeration",
+      "conditions": {
+        "visible": {
+          "==": [
+            {
+              "var": "type"
+            },
+            "paragraph"
+          ]
+        }
+      },
+      "enum": ["numbered-bullet", "icon"]
     }
   }
 }
