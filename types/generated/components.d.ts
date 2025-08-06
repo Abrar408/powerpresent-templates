@@ -38,6 +38,7 @@ export interface SharedChildElement extends Struct.ComponentSchema {
     children: Schema.Attribute.Component<'shared.nested-child-element', true>;
     custom_style_node: Schema.Attribute.String;
     data_type: Schema.Attribute.Enumeration<['numbered-bullet', 'icon']>;
+    media: Schema.Attribute.Media<'images'>;
     repeat: Schema.Attribute.Integer;
     style: Schema.Attribute.JSON;
     type: Schema.Attribute.Enumeration<
@@ -71,6 +72,7 @@ export interface SharedDeepNestedChildElement extends Struct.ComponentSchema {
     >;
     custom_style_node: Schema.Attribute.String;
     data_type: Schema.Attribute.Enumeration<['numbered-bullet', 'icon']>;
+    media: Schema.Attribute.Media<'images'>;
     repeat: Schema.Attribute.Integer;
     style: Schema.Attribute.JSON;
     type: Schema.Attribute.Enumeration<
@@ -104,6 +106,7 @@ export interface SharedElement extends Struct.ComponentSchema {
     children: Schema.Attribute.Component<'shared.child-element', true>;
     custom_style_node: Schema.Attribute.String;
     data_type: Schema.Attribute.Enumeration<['numbered-bullet', 'icon']>;
+    media: Schema.Attribute.Media<'images'>;
     repeat: Schema.Attribute.Integer;
     style: Schema.Attribute.JSON;
     type: Schema.Attribute.Enumeration<
@@ -118,6 +121,7 @@ export interface SharedElement extends Struct.ComponentSchema {
         'un-ordered-bullets',
         'image',
         'group',
+        'shape',
         'background-element',
       ]
     > &
@@ -152,6 +156,7 @@ export interface SharedNestedChildElement extends Struct.ComponentSchema {
     >;
     custom_style_node: Schema.Attribute.String;
     data_type: Schema.Attribute.Enumeration<['numbered-bullet', 'icon']>;
+    media: Schema.Attribute.Media<'images'>;
     repeat: Schema.Attribute.Integer;
     style: Schema.Attribute.JSON;
     type: Schema.Attribute.Enumeration<

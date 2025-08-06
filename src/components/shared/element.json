@@ -19,6 +19,7 @@
         "un-ordered-bullets",
         "image",
         "group",
+        "shape",
         "background-element"
       ]
     },
@@ -73,7 +74,27 @@
           ]
         }
       },
-      "enum": ["numbered-bullet", "icon"]
+      "enum": [
+        "numbered-bullet",
+        "icon"
+      ]
+    },
+    "media": {
+      "type": "media",
+      "conditions": {
+        "visible": {
+          "==": [
+            {
+              "var": "type"
+            },
+            "image"
+          ]
+        }
+      },
+      "multiple": false,
+      "allowedTypes": [
+        "images"
+      ]
     }
   }
 }

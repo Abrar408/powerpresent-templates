@@ -25,6 +25,7 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
           populate: {
             elements: {
               populate: {
+                media: true,
                 background_element: {
                   populate: {
                     media: true,
@@ -39,6 +40,7 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
                         children: {
                           // Populate deep-nested-child elements
                           populate: {
+                            media: true,
                             background_element: {
                               populate: {
                                 media: true,
@@ -46,6 +48,7 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
                             },
                           },
                         },
+                        media: true,
                         background_element: {
                           populate: {
                             media: true,
@@ -53,6 +56,7 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
                         },
                       },
                     },
+                    media: true,
                     background_element: {
                       populate: {
                         media: true,
@@ -151,10 +155,14 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
 
     // Generate the complete slide HTML with proper formatting for TipTap
     const backgroundColor = slide.background_color || '#ffffff';
+    const backgroundImage = slide.background_image
+      ? `<img data-type="background-image" src="${process.env.MEDIA_URL}${slide.background_image.url}" alt="${slide.background_image.alternativeText || 'Background Image'}" />`
+      : '';
 
     return `<slide-node data-slide-number="${slideNumber}">
         <data-node style="background-color: ${backgroundColor};" data-template="${templateName}" data-type="${slideType}" data-variant="${variant}" data-slide-number="${slideNumber}">
-          ${htmlContent}
+         ${backgroundImage}
+        ${htmlContent}
         </data-node>
       </slide-node>\n`;
   },
@@ -219,7 +227,9 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
         <li>Heading # 4</li>
       </${listType}>`;
       case 'image':
-        return '<img src="/assets/placeholder.png" alt="Product Demo" />';
+        const mediaUrl = element.media?.url || '/assets/placeholder.png';
+        const altText = element.media?.alternativeText || 'Image';
+        return `<img src="${mediaUrl ? process.env.MEDIA_URL : ''}${mediaUrl}" alt="${altText}" />`;
       case 'shape':
         return '<shape-node></shape-node>';
       default:

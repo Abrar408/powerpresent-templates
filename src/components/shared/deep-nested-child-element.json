@@ -58,6 +58,21 @@
         }
       },
       "enum": ["numbered-bullet", "icon"]
+    },
+    "media": {
+      "type": "media",
+      "conditions": {
+        "visible": {
+          "==": [
+            {
+              "var": "type"
+            },
+            "image"
+          ]
+        }
+      },
+      "multiple": false,
+      "allowedTypes": ["images"]
     }
   }
 }
