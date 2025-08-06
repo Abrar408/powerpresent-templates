@@ -229,7 +229,7 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
       case 'image':
         const mediaUrl = element.media?.url || '/assets/placeholder.png';
         const altText = element.media?.alternativeText || 'Image';
-        return `<img src="${mediaUrl ? process.env.MEDIA_URL : ''}${mediaUrl}" alt="${altText}" />`;
+        return `<img src="${element.media?.url ? process.env.MEDIA_URL : ''}${mediaUrl}" alt="${altText}" />`;
       case 'shape':
         return '<shape-node></shape-node>';
       default:
@@ -265,7 +265,7 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
         if (element.style && typeof element.style === 'object') {
           const groupStyles = this.convertStyleObjectToCSS(element.style);
           if (groupStyles) {
-            scss += `        .tiptap-block-node {\n          ${groupStyles}`;
+            scss += `        ${element.custom_style_node ?? '.tiptap-block-node'} {\n          ${groupStyles}`;
 
             // Process children elements within this group
             const childrenScss = this.generateChildrenScss(element.children, '          ');
@@ -277,7 +277,7 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
           }
         } else {
           // Group without styles but with children
-          scss += `        .tiptap-block-node {\n`;
+          scss += `        ${element.custom_style_node ?? '.tiptap-block-node'} {\n`;
 
           // Process children elements within this group
           const childrenScss = this.generateChildrenScss(element.children, '          ');
@@ -310,7 +310,7 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
         if (child.style && typeof child.style === 'object') {
           const nestedGroupStyles = this.convertStyleObjectToCSS(child.style);
           if (nestedGroupStyles) {
-            childrenScss += `\n${indentation}  .tiptap-block-node {\n${indentation}    ${nestedGroupStyles.replace(/\n          /g, `\n${indentation}    `)}`;
+            childrenScss += `\n${indentation}  ${child.custom_style_node ?? '.tiptap-block-node'} {\n${indentation}    ${nestedGroupStyles.replace(/\n          /g, `\n${indentation}    `)}`;
 
             // Recursively process grandchildren
             const grandChildrenScss = this.generateChildrenScss(child.children, indentation + '    ');
@@ -322,7 +322,7 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
           }
         } else {
           // Group without styles but with children
-          childrenScss += `\n${indentation}  .tiptap-block-node {`;
+          childrenScss += `\n${indentation}  ${child.custom_style_node ?? '.tiptap-block-node'} {`;
 
           const grandChildrenScss = this.generateChildrenScss(child.children, indentation + '    ');
           if (grandChildrenScss) {
