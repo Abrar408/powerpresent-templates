@@ -9,6 +9,7 @@
     "develop": "strapi develop",
     "seed:example": "node ./scripts/seed.js",
     "seed:simple": "node ./scripts/seed-simple-standalone.js",
+    "upload-svgs": "node ./scripts/upload-svgs.js",
     "start": "strapi start",
     "strapi": "strapi"
   },
@@ -16,8 +17,10 @@
     "@strapi/plugin-cloud": "5.19.0",
     "@strapi/plugin-color-picker": "^5.19.0",
     "@strapi/plugin-users-permissions": "5.19.0",
+    "@strapi/provider-upload-aws-s3": "^5.21.0",
     "@strapi/strapi": "5.19.0",
     "@strapi/types": "^5.19.0",
+    "aws-sdk": "^2.1692.0",
     "better-sqlite3": "11.3.0",
     "fs-extra": "^10.0.0",
     "mime-types": "^2.1.27",

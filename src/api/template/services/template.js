@@ -142,7 +142,7 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
           const altText = element.background_element.media?.alternativeText || 'Background Image';
 
           if (mediaUrl) {
-            htmlContent += `\n          <img data-type='${position}-background' src="${process.env.MEDIA_URL}${mediaUrl}" alt="${altText}" />`;
+            htmlContent += `\n          <img data-type='${position}-background' src="${mediaUrl}" alt="${altText}" />`;
           }
         } else if (element.type === 'paragraph' && element.data_type === 'numbered-bullet') {
           htmlContent += `<p>${i + 1}</p>`;
@@ -156,7 +156,7 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
     // Generate the complete slide HTML with proper formatting for TipTap
     const backgroundColor = slide.background_color || '#ffffff';
     const backgroundImage = slide.background_image
-      ? `<img data-type="background-image" src="${process.env.MEDIA_URL}${slide.background_image.url}" alt="${slide.background_image.alternativeText || 'Background Image'}" />`
+      ? `<img data-type="background-image" src="${slide.background_image.url}" alt="${slide.background_image.alternativeText || 'Background Image'}" />`
       : '';
 
     return `<slide-node data-slide-number="${slideNumber}">
@@ -189,7 +189,7 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
           const altText = child.background_element.media?.alternativeText || 'Background Image';
 
           if (mediaUrl) {
-            childrenHTML += `\n          <img data-type='${position}-background' src="${process.env.MEDIA_URL}${mediaUrl}" alt="${altText}" />`;
+            childrenHTML += `\n          <img data-type='${position}-background' src="${mediaUrl}" alt="${altText}" />`;
           }
         } else if (child.type === 'paragraph' && child.data_type === 'numbered-bullet') {
           childrenHTML += `<p>${parentRepeatNumber}</p>`;
@@ -227,9 +227,9 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
         <li>Heading # 4</li>
       </${listType}>`;
       case 'image':
-        const mediaUrl = element.media?.url || '/assets/placeholder.png';
+        const mediaUrl = element.media?.url;
         const altText = element.media?.alternativeText || 'Image';
-        return `<img src="${element.media?.url ? process.env.MEDIA_URL : ''}${mediaUrl}" alt="${altText}" />`;
+        return `<img src="${mediaUrl ?? '/assets/placeholder.png'}" alt="${altText}" />`;
       case 'shape':
         return '<shape-node></shape-node>';
       default:
