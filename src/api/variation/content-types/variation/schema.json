@@ -1,11 +1,11 @@
 {
   "kind": "collectionType",
-  "collectionName": "slides",
+  "collectionName": "variations",
   "info": {
-    "singularName": "slide",
-    "pluralName": "slides",
-    "displayName": "Slide",
-    "description": "Individual slides within a template"
+    "singularName": "variation",
+    "pluralName": "variations",
+    "displayName": "Variation",
+    "description": "Individual variations within a template"
   },
   "options": {
     "draftAndPublish": false
@@ -23,18 +23,10 @@
       "type": "media",
       "multiple": false,
       "required": false,
-      "allowedTypes": [
-        "images"
-      ]
+      "allowedTypes": ["images"]
     },
     "style": {
       "type": "json"
-    },
-    "template": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "api::template.template",
-      "inversedBy": "slides"
     },
     "elements": {
       "type": "component",
@@ -45,11 +37,6 @@
       "type": "customField",
       "customField": "plugin::color-picker.color",
       "regex": "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$"
-    },
-    "variations": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::variation.variation"
     }
   }
 }

@@ -435,6 +435,10 @@ export interface ApiSlideSlide extends Struct.CollectionTypeSchema {
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     variant: Schema.Attribute.String;
+    variations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::variation.variation'
+    >;
   };
 }
 
@@ -467,6 +471,41 @@ export interface ApiTemplateTemplate extends Struct.CollectionTypeSchema {
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+  };
+}
+
+export interface ApiVariationVariation extends Struct.CollectionTypeSchema {
+  collectionName: 'variations';
+  info: {
+    description: 'Individual variations within a template';
+    displayName: 'Variation';
+    pluralName: 'variations';
+    singularName: 'variation';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    background_color: Schema.Attribute.String &
+      Schema.Attribute.CustomField<'plugin::color-picker.color'>;
+    background_image: Schema.Attribute.Media<'images'>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    elements: Schema.Attribute.Component<'shared.element', true>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::variation.variation'
+    > &
+      Schema.Attribute.Private;
+    name: Schema.Attribute.String & Schema.Attribute.Required;
+    publishedAt: Schema.Attribute.DateTime;
+    style: Schema.Attribute.JSON;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    variant: Schema.Attribute.String;
   };
 }
 
@@ -982,6 +1021,7 @@ declare module '@strapi/strapi' {
       'api::global.global': ApiGlobalGlobal;
       'api::slide.slide': ApiSlideSlide;
       'api::template.template': ApiTemplateTemplate;
+      'api::variation.variation': ApiVariationVariation;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
       'plugin::i18n.locale': PluginI18NLocale;
