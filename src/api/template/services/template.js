@@ -67,6 +67,54 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
               },
             },
             background_image: true,
+            variations: {
+              populate: {
+                elements: {
+                  populate: {
+                    media: true,
+                    background_element: {
+                      populate: {
+                        media: true,
+                      },
+                    },
+                    children: {
+                      // Populate child elements
+                      populate: {
+                        children: {
+                          // Populate nested-child elements
+                          populate: {
+                            children: {
+                              // Populate deep-nested-child elements
+                              populate: {
+                                media: true,
+                                background_element: {
+                                  populate: {
+                                    media: true,
+                                  },
+                                },
+                              },
+                            },
+                            media: true,
+                            background_element: {
+                              populate: {
+                                media: true,
+                              },
+                            },
+                          },
+                        },
+                        media: true,
+                        background_element: {
+                          populate: {
+                            media: true,
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+                background_image: true,
+              },
+            },
           },
         },
       },
@@ -79,14 +127,32 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
     // Return the first template since name is unique
     const template = templates[0];
 
-    // Generate combined HTML and SCSS for all slides
+    // Generate combined HTML and SCSS for all slides and their variations
     let combinedHTML = '';
     let combinedSCSS = '';
+    let slideCounter = 1;
 
     template.slides.forEach((slide, slideIndex) => {
-      combinedHTML += this.generateSlideHTML(slide, slideIndex + 1, template.name);
+      // Generate HTML and SCSS for the main slide
+      combinedHTML += this.generateSlideHTML(slide, slideCounter, template.name);
+      combinedSCSS += this.generateSlideScss(slide);
+      slideCounter++;
 
-      combinedSCSS += this.generateSlideScss(slide, template.name);
+      // Generate HTML and SCSS for each variation of this slide
+      if (slide.variations && slide.variations.length > 0) {
+        slide.variations.forEach((variation, variationIndex) => {
+          // Create a variation object that looks like a slide for processing
+          const variationAsSlide = {
+            ...variation,
+            name: slide.name,
+            variant: variation.variant,
+          };
+
+          combinedHTML += this.generateSlideHTML(variationAsSlide, slideCounter, template.name);
+          combinedSCSS += this.generateSlideScss(variationAsSlide);
+          slideCounter++;
+        });
+      }
     });
 
     const scssWithStructure = `.tiptap.ProseMirror {
@@ -238,7 +304,7 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
   },
 
   // Helper method to generate SCSS for a slide
-  generateSlideScss(slide, templateName) {
+  generateSlideScss(slide) {
     const slideType = slide.name;
     const variant = slide.variant || 'default';
     const backgroundColor = slide.background_color || '#ffffff';
