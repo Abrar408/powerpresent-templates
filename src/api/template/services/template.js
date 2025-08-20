@@ -182,6 +182,115 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
     };
   },
 
+  async getTemplateWithStructure(id) {
+    const template = await strapi.entityService.findOne('api::template.template', id, {
+      populate: {
+        slides: {
+          populate: {
+            elements: {
+              populate: {
+                media: true,
+                background_element: {
+                  populate: {
+                    media: true,
+                  },
+                },
+                children: {
+                  // Populate child elements
+                  populate: {
+                    children: {
+                      // Populate nested-child elements
+                      populate: {
+                        children: {
+                          // Populate deep-nested-child elements
+                          populate: {
+                            media: true,
+                            background_element: {
+                              populate: {
+                                media: true,
+                              },
+                            },
+                          },
+                        },
+                        media: true,
+                        background_element: {
+                          populate: {
+                            media: true,
+                          },
+                        },
+                      },
+                    },
+                    media: true,
+                    background_element: {
+                      populate: {
+                        media: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+            background_image: true,
+            variations: {
+              populate: {
+                elements: {
+                  populate: {
+                    media: true,
+                    background_element: {
+                      populate: {
+                        media: true,
+                      },
+                    },
+                    children: {
+                      // Populate child elements
+                      populate: {
+                        children: {
+                          // Populate nested-child elements
+                          populate: {
+                            children: {
+                              // Populate deep-nested-child elements
+                              populate: {
+                                media: true,
+                                background_element: {
+                                  populate: {
+                                    media: true,
+                                  },
+                                },
+                              },
+                            },
+                            media: true,
+                            background_element: {
+                              populate: {
+                                media: true,
+                              },
+                            },
+                          },
+                        },
+                        media: true,
+                        background_element: {
+                          populate: {
+                            media: true,
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+                background_image: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!template) {
+      return null;
+    }
+
+    return template;
+  },
+
   // Helper method to generate HTML for a slide
   generateSlideHTML(slide, slideNumber, templateName) {
     const elements = slide.elements || [];

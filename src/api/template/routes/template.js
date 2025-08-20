@@ -16,6 +16,16 @@ module.exports = {
         middlewares: [],
       },
     },
+    {
+      method: 'GET',
+      path: '/templates/structure/:id',
+      handler: 'template.getTemplateWithStructure',
+      config: {
+        policies: [],
+        middlewares: [],
+      },
+    },
+
     // Include default CRUD routes
     {
       method: 'GET',
