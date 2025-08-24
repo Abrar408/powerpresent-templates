@@ -13,7 +13,25 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
   cleanContent(content) {
     return content
       .replace(/\\n/g, '') // Remove \n
-      .replace(/\\/g, ''); // Remove backslashes before quotes
+      .replace(/\\/g, ''); // Remove backs lashes before quotes
+  },
+
+  async getAll() {
+    const templates = await strapi.entityService.findMany('api::template.template', {
+      populate: {
+        thumbnail: true,
+      },
+    });
+
+    return templates.map((template) => {
+      return {
+        id: template.id,
+        name: template.name,
+        category: template.category || 'general',
+        description: template.description || '',
+        thumbnail: template.thumbnail?.url || null,
+      };
+    });
   },
 
   // Custom service method to get template by name with all nested data

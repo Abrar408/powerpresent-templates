@@ -8,6 +8,17 @@
 const { createCoreController } = require('@strapi/strapi').factories;
 
 module.exports = createCoreController('api::template.template', ({ strapi }) => ({
+  async find(ctx) {
+    try {
+      const templates = await strapi.service('api::template.template').getAll();
+
+      return { data: templates || [] };
+    } catch (error) {
+      console.error('Error fetching template by name:', error);
+      return ctx.internalServerError('An error occurred while fetching the template');
+    }
+  },
+
   // Custom controller method to get template by name with all data
   async findByName(ctx) {
     try {

@@ -22,6 +22,25 @@
       "relation": "oneToMany",
       "target": "api::slide.slide",
       "mappedBy": "template"
+    },
+    "category": {
+      "type": "enumeration",
+      "default": "general",
+      "enum": [
+        "general",
+        "pitchDeck",
+        "medical"
+      ]
+    },
+    "thumbnail": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "description": {
+      "type": "string"
     }
   }
 }
