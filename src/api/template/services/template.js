@@ -32,6 +32,7 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
         thumbnail: template?.thumbnail?.url
           ? `https://dtmmqjfkzbyw0.cloudfront.net${template.thumbnail.url.split('https://powerpresent.s3.eu-west-1.amazonaws.com')[1]}`
           : null,
+        backgroundColor: template?.backgroundColor || null,
       };
     });
   },

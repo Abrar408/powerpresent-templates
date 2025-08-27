@@ -454,6 +454,7 @@ export interface ApiTemplateTemplate extends Struct.CollectionTypeSchema {
     draftAndPublish: false;
   };
   attributes: {
+    backgroundColor: Schema.Attribute.String;
     category: Schema.Attribute.Enumeration<
       ['general', 'pitchDeck', 'medical']
     > &
