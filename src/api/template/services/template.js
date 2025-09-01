@@ -152,11 +152,15 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
     let combinedHTML = '';
     let combinedSCSS = '';
     let slideCounter = 1;
+    let thankyouSlide;
 
     template.slides.forEach((slide, slideIndex) => {
       // Generate HTML and SCSS for the main slide
       combinedHTML += this.generateSlideHTML(slide, slideCounter, template.name);
       combinedSCSS += this.generateSlideScss(slide);
+      if (slide.name === 'title-slide') {
+        combinedSCSS += this.generateSlideScss({ ...slide, name: 'thank-you-slide' });
+      }
       slideCounter++;
 
       // Generate HTML and SCSS for each variation of this slide
