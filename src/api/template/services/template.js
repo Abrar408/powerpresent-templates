@@ -436,7 +436,7 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
 
     // Process each element
     elements.forEach((element) => {
-      const repeatCount = element.repeat || 1; // Default to 1 if no repeat specified
+      const repeatCount = element?.repeat || 1; // Default to 1 if no repeat specified
 
       for (let i = 0; i < repeatCount; i++) {
         if (element.type === 'group') {
