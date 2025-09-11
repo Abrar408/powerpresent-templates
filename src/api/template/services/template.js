@@ -230,6 +230,11 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
       }
     });
 
+    const templateLevelStyles = this.convertStyleObjectToCSS(template.style || {}, {}, templateVarsMap);
+    const templateScss = templateLevelStyles
+      ? `.data-node-content {\n      >div[data-node-view-content-react][data-node-view-wrapper] {\n        ${templateLevelStyles}\n      }\n    }\n`
+      : '';
+
     const scssWithStructure = `.tiptap.ProseMirror {
   .node-dataNode {
     display: block;
@@ -241,14 +246,14 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
     background-color: transparent;
 
     .tiptap-data-node {
-    &.template-${template.name} {\n ${combinedSCSS}\n}
+    &.template-${template.name} {\n ${templateScss}${combinedSCSS}\n}
     }}}`;
 
     // Save SCSS to file
     await this.saveScssToFile(scssWithStructure, template.name);
 
     console.log(this.cleanContent(combinedHTML));
-    console.log(this.cleanContent(combinedSCSS));
+    console.log(this.cleanContent(scssWithStructure));
     // Return only the essential data with combined HTML and SCSS
     return {
       id: template.id,

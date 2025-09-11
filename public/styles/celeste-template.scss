@@ -10,7 +10,12 @@
 
     .tiptap-data-node {
     &.template-celeste {
- &.type-title-slide {
+ .data-node-content {
+      >div[data-node-view-content-react][data-node-view-wrapper] {
+        padding: 2px;
+      }
+    }
+&.type-title-slide {
   &.variant-no-image {
     .data-node-content {
       background-color: #ffffff;
