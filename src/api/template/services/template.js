@@ -312,6 +312,53 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
                 },
               },
             },
+            layout: {
+              populate: {
+                elements: {
+                  populate: {
+                    media: true,
+                    background_element: {
+                      populate: {
+                        media: true,
+                      },
+                    },
+                    children: {
+                      // Populate child elements
+                      populate: {
+                        children: {
+                          // Populate nested-child elements
+                          populate: {
+                            children: {
+                              // Populate deep-nested-child elements
+                              populate: {
+                                media: true,
+                                background_element: {
+                                  populate: {
+                                    media: true,
+                                  },
+                                },
+                              },
+                            },
+                            media: true,
+                            background_element: {
+                              populate: {
+                                media: true,
+                              },
+                            },
+                          },
+                        },
+                        media: true,
+                        background_element: {
+                          populate: {
+                            media: true,
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
             background_image: true,
             variables: true,
             variations: {
@@ -371,7 +418,13 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
       return null;
     }
 
-    return template;
+    return {
+      ...template,
+      slides: template.slides.map((slide) => ({
+        ...slide,
+        elements: slide.elements?.length > 0 ? slide.elements : [slide.layout?.elements],
+      })),
+    };
   },
 
   // Helper method to generate HTML for a slide
