@@ -252,8 +252,8 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
     // Save SCSS to file
     await this.saveScssToFile(scssWithStructure, template.name);
 
-    console.log(this.cleanContent(combinedHTML));
-    console.log(this.cleanContent(scssWithStructure));
+    // console.log(this.cleanContent(combinedHTML));
+    // console.log(this.cleanContent(scssWithStructure));
     // Return only the essential data with combined HTML and SCSS
     return {
       id: template.id,
@@ -497,7 +497,7 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
 
   // Helper method to generate SCSS for a slide
   generateSlideScss(slide, templateVarsMap = {}) {
-    console.log(slide);
+    // console.log(slide);
     const slideType = slide.name;
     const variant = slide.variant || 'default';
     const backgroundColor = slide.background_color || '#ffffff';
@@ -520,7 +520,7 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
     // Process elements and their styles
     const elements = slide.elements?.length > 0 ? slide.elements : [slide.layout?.elements];
 
-    console.log('elements', elements);
+    // console.log('elements', elements);
     elements.forEach((element) => {
       if (element.type === 'group' && element.children) {
         // Process group element styles
@@ -569,7 +569,7 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
 
   // Helper method to generate SCSS for children elements with proper nesting
   generateChildrenScss(children, indentation = '        ', slideVarsMap = {}, templateVarsMap = {}) {
-    console.log('children', children);
+    // console.log('children', children);
     let childrenScss = '';
 
     children.forEach((child) => {
