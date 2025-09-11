@@ -11,275 +11,75 @@
     .tiptap-data-node {
     &.template-celeste {
  &.type-title-slide {
-  &.variant-top-image {
-    .data-node-content {
-      background-color: #18072B;
-      >div[data-node-view-content-react][data-node-view-wrapper] {
-        .tiptap-block-node {
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-
-
-            .node-heading:has(h1) {
-              padding: clamp(4px, 1vw, 10px);
-              width: fit-content;
-              height: fit-content;
-              color: white;
-              text-align: center;
-              margin-bottom: clamp(8px, 2vw, 16px);
-              white-space: nowrap;
-            }
-
-            .node-heading:has(h4) {
-              padding: clamp(4px, 1vw, 10px);
-              width: fit-content;
-              height: fit-content;
-              color: white;
-              text-align: center;
-            }
-        }
-
-      }
-    }
-  }
-}&.type-agenda-slide {
-  &.variant-left-image {
-    .data-node-content {
-      background-color: #18072B;
-      >div[data-node-view-content-react][data-node-view-wrapper] {
-        display: grid;
-          grid-template-columns: 37% 1fr;
-          grid-template-rows: 1fr;
-        ul {
-          grid-column: 2;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          list-style: none;
-          padding: clamp(12.5px, 4vw, 50px);
-          margin: 0;
-          li {
-            display: flex;
-          align-items: center;
-          gap: clamp(4px, 1vw, 16px);
-          span {
-            background-color: white;
-          }
-          h4 {
-            color: white;
-          }
-          p {
-            color: white;
-          font-size: clamp(8px, 2.5vw, 32px) !important;
-          }
-          position: relative;
-          padding: clamp(4px, 1vw, 16px) 0 clamp(4px, 1vw, 16px) clamp(12px, 4vw, 48px);
-          margin: 0;
-          font-size: clamp(8px, 2.5vw, 32px);
-          font-weight: 600;
-          color: white;
-          }
-        }
-
-      }
-    }
-  }
-}&.type-accent-image-slide {
-  &.variant-left-image {
-    .data-node-content {
-      background-color: #ffffff;
-      >div[data-node-view-content-react][data-node-view-wrapper] {
-        display: grid;
-          align-items: center;
-          grid-template-columns: 37% 1fr;
-        .tiptap-block-node {
-          padding-right: 0;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-
-
-            .node-heading:has(h2) {
-              background-image: linear-gradient(to right, #b417e4, #4298ea);
-              color: white;
-              margin: 0 0 clamp(6px, 2vw, 25px) 0;
-            }
-
-            .node-paragraph {
-              color: black;
-              padding-right: clamp(12.5px, 4vw, 50px);
-              margin-bottom: clamp(12.5px, 4vw, 50px);
-            }
-
-            .node-shapeNode {
-              height: clamp(2px, 1vw, 8px);
-              background: linear-gradient(to right, #3ec4f7, #5faef4, #a682ef, #c371ed);
-            }
-        }
-
-      }
-    }
-  }
-}&.type-heading-text-slide {
-  &.variant-left-heading {
-    .data-node-content {
-      background-color: #ffffff;
-      >div[data-node-view-content-react][data-node-view-wrapper] {
-        .tiptap-block-node {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          gap: clamp(12.5px, 4vw, 50px);
-
-
-            .node-heading:has(h1) {
-              color: black;
-              display: flex;
-              justify-content: center;
-              text-align: center;
-              width:  100%;
-            }
-
-            .node-paragraph {
-              color: black;
-              padding: 0 clamp(12.5px, 4vw, 50px);
-            }
-        }
-
-      }
-    }
-  }
-}&.type-text-card-slide {
-  &.variant-default {
-    .data-node-content {
-      background-color: #ffffff;
-      >div[data-node-view-content-react][data-node-view-wrapper] {
-        padding: clamp(12.5px, 4vw, 50px) 0;
-        .node-heading:has(h1) {
-          color: #3ec4f7;
-          padding-left: clamp(12.5px, 4vw, 50px);
-        }
-        .node-shapeNode:nth-of-type(2) {
-          width: 80%;
-          height: clamp(1px, 0.5vw, 4px);
-          margin-bottom: clamp(1px, 0.5vw, 4px);
-          background: linear-gradient(to right, #3ec4f7, #5faef4, #a682ef, #c371ed);
-        }
-        .node-shapeNode:nth-of-type(3) {
-          width: 70%;
-          height: clamp(1px, 0.5vw, 4px);
-          background: linear-gradient(to right, #3ec4f7, #5faef4, #a682ef, #c371ed);
-        }
-        .tiptap-block-node {
-          display: grid;
-          justify-content: center;
-          grid-template-columns: 1fr 1fr 1fr;
-          grid-template-rows: 1fr;
-          padding: clamp(12.5px, 4vw, 50px);
-          gap: 0 clamp(12.5px, 4vw, 50px);
-          height: fit-content;
-
-            .tiptap-block-node {
-              display: flex;
-              flex-direction: column;
-              padding: 0;
-
-                .node-heading:has(h4) {
-                  font-weight: bold;
-                  color: black;
-                  display: flex;
-                  justify-content: left;
-                  margin-bottom: clamp(6px, 2vw, 24px);
-                }
-
-                .node-paragraph {
-                  margin: 0;
-                  color: black;
-                }
-            }
-        }
-
-      }
-    }
-  }
-}&.type-unordered-bullets-slide {
   &.variant-no-image {
     .data-node-content {
       background-color: #ffffff;
       >div[data-node-view-content-react][data-node-view-wrapper] {
-        padding: clamp(12.5px, 4vw, 50px) 0;
-        .node-heading:has(h1) {
-          color: #3ec4f7;
-          padding-left: clamp(12.5px, 4vw, 50px);
-        }
-        .node-shapeNode:nth-of-type(2) {
-          width: 80%;
-          height: clamp(1px, 0.5vw, 4px);
-          margin-bottom: clamp(1px, 0.5vw, 4px);
-          background: linear-gradient(to right, #3ec4f7, #5faef4, #a682ef, #c371ed);
-        }
-        .node-shapeNode:nth-of-type(3) {
-          width: 70%;
-          height: clamp(1px, 0.5vw, 4px);
-          background: linear-gradient(to right, #3ec4f7, #5faef4, #a682ef, #c371ed);
-        }
-        ul {
-          list-style: none;
-          padding: clamp(12.5px, 4vw, 50px);
-          li {
-            display: flex;
-          align-items: start;
-          gap: 0 clamp(7px, 2vw, 16px);
-          margin-bottom: clamp(7px, 2vw, 16px);
-          color: black;
-          span {
-            margin-top: clamp(1px, 0.3vw, 4px);
-          background-image: linear-gradient(to right, #b417e4, #4298ea);
-          }
-          p {
-            font-size: clamp(6px, 1.8vw, 20px) !important;
-          }
-          }
+        .tiptap-block-node {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+
+
+            .node-heading:has(h1) {
+              padding: clamp(4px, 1vw, 10px);
+              width: fit-content;
+              height: fit-content;
+              color: blue;
+              text-align: center;
+              margin-bottom: clamp(8px, 2vw, 16px);
+              white-space: nowrap;
+              font-family: "Poppins", sans-serif;
+              font-weight: 600;
+            }
+
+            .node-heading:has(h4) {
+              padding: clamp(4px, 1vw, 10px);
+              width: fit-content;
+              height: fit-content;
+              color: ;
+              text-align: center;
+              font-family: "Poppins", sans-serif;
+              font-weight: 600;
+            }
         }
 
       }
     }
   }
-}&.type-image-formats-slide {
-  &.variant-square-image {
+}&.type-thank-you-slide {
+  &.variant-no-image {
     .data-node-content {
-      background-color: #18072B;
+      background-color: #ffffff;
       >div[data-node-view-content-react][data-node-view-wrapper] {
-        display: grid;
-          justify-content: center;
-          grid-template-columns: 1fr 1fr 1fr;
-          gap: 0 clamp(11px, 3vw, 44px);
-          padding: clamp(12.5px, 4vw, 50px);
         .tiptap-block-node {
-          display: grid;
+          display: flex;
+          flex-direction: column;
           justify-content: center;
-          grid-template-columns: 1fr;
-          grid-template-rows: 30% auto 1fr;
-          gap: clamp(3px, 1vw, 12px) 0;
-          padding: 0;
+          align-items: center;
 
 
-            .node-image {
-              width: 100%;
-              object-fit: cover;
-              border-radius: clamp(3px, 1vw, 12px);
-              overflow: hidden;
+            .node-heading:has(h1) {
+              padding: clamp(4px, 1vw, 10px);
+              width: fit-content;
+              height: fit-content;
+              color: blue;
+              text-align: center;
+              margin-bottom: clamp(8px, 2vw, 16px);
+              white-space: nowrap;
+              font-family: "Poppins", sans-serif;
+              font-weight: 600;
             }
 
             .node-heading:has(h4) {
-              color: #3ec4f7;
-            }
-
-            .node-paragraph {
-              color: white;
+              padding: clamp(4px, 1vw, 10px);
+              width: fit-content;
               height: fit-content;
+              color: ;
+              text-align: center;
+              font-family: "Poppins", sans-serif;
+              font-weight: 600;
             }
         }
 

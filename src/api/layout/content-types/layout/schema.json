@@ -1,0 +1,32 @@
+{
+  "kind": "collectionType",
+  "collectionName": "layouts",
+  "info": {
+    "singularName": "layout",
+    "pluralName": "layouts",
+    "displayName": "Layout"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "elements": {
+      "type": "component",
+      "component": "shared.element",
+      "repeatable": false,
+      "required": true
+    },
+    "slides": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::slide.slide",
+      "mappedBy": "layout"
+    },
+    "name": {
+      "type": "string",
+      "required": true,
+      "unique": true
+    }
+  }
+}

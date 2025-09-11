@@ -42,6 +42,7 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
     const templates = await strapi.entityService.findMany('api::template.template', {
       filters: { name },
       populate: {
+        variables: true,
         slides: {
           populate: {
             elements: {
@@ -87,7 +88,55 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
                 },
               },
             },
+            layout: {
+              populate: {
+                elements: {
+                  populate: {
+                    media: true,
+                    background_element: {
+                      populate: {
+                        media: true,
+                      },
+                    },
+                    children: {
+                      // Populate child elements
+                      populate: {
+                        children: {
+                          // Populate nested-child elements
+                          populate: {
+                            children: {
+                              // Populate deep-nested-child elements
+                              populate: {
+                                media: true,
+                                background_element: {
+                                  populate: {
+                                    media: true,
+                                  },
+                                },
+                              },
+                            },
+                            media: true,
+                            background_element: {
+                              populate: {
+                                media: true,
+                              },
+                            },
+                          },
+                        },
+                        media: true,
+                        background_element: {
+                          populate: {
+                            media: true,
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
             background_image: true,
+            variables: true,
             variations: {
               populate: {
                 elements: {
@@ -149,6 +198,7 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
     const template = templates[0];
 
     // Generate combined HTML and SCSS for all slides and their variations
+    const templateVarsMap = this.arrayToVarMap(template.variables);
     let combinedHTML = '';
     let combinedSCSS = '';
     let slideCounter = 1;
@@ -157,9 +207,9 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
     template.slides.forEach((slide, slideIndex) => {
       // Generate HTML and SCSS for the main slide
       combinedHTML += this.generateSlideHTML(slide, slideCounter, template.name);
-      combinedSCSS += this.generateSlideScss(slide);
+      combinedSCSS += this.generateSlideScss(slide, templateVarsMap);
       if (slide.name === 'title-slide') {
-        combinedSCSS += this.generateSlideScss({ ...slide, name: 'thank-you-slide' });
+        combinedSCSS += this.generateSlideScss({ ...slide, name: 'thank-you-slide' }, templateVarsMap);
       }
       slideCounter++;
 
@@ -174,7 +224,7 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
           };
 
           combinedHTML += this.generateSlideHTML(variationAsSlide, slideCounter, template.name);
-          combinedSCSS += this.generateSlideScss(variationAsSlide);
+          combinedSCSS += this.generateSlideScss(variationAsSlide, templateVarsMap);
           slideCounter++;
         });
       }
@@ -198,6 +248,7 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
     await this.saveScssToFile(scssWithStructure, template.name);
 
     console.log(this.cleanContent(combinedHTML));
+    console.log(this.cleanContent(combinedSCSS));
     // Return only the essential data with combined HTML and SCSS
     return {
       id: template.id,
@@ -210,6 +261,7 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
   async getTemplateWithStructure(id) {
     const template = await strapi.entityService.findOne('api::template.template', id, {
       populate: {
+        variables: true,
         slides: {
           populate: {
             elements: {
@@ -256,6 +308,7 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
               },
             },
             background_image: true,
+            variables: true,
             variations: {
               populate: {
                 elements: {
@@ -318,7 +371,7 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
 
   // Helper method to generate HTML for a slide
   generateSlideHTML(slide, slideNumber, templateName) {
-    const elements = slide.elements || [];
+    const elements = slide.elements?.length > 0 ? slide.elements : [slide.layout?.elements];
     const slideType = slide.name;
     const variant = slide.variant || 'default';
     let htmlContent = '';
@@ -438,10 +491,12 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
   },
 
   // Helper method to generate SCSS for a slide
-  generateSlideScss(slide) {
+  generateSlideScss(slide, templateVarsMap = {}) {
+    console.log(slide);
     const slideType = slide.name;
     const variant = slide.variant || 'default';
     const backgroundColor = slide.background_color || '#ffffff';
+    const slideVarsMap = this.arrayToVarMap(slide.variables);
 
     let scss = `&.type-${slideType} {\n`;
     scss += `  &.variant-${variant} {\n`;
@@ -451,24 +506,31 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
 
     // Add slide-level styles if present
     if (slide.style && typeof slide.style === 'object') {
-      const slideStyles = this.convertStyleObjectToCSS(slide.style);
+      const slideStyles = this.convertStyleObjectToCSS(slide.style, slideVarsMap, templateVarsMap);
       if (slideStyles) {
         scss += `        ${slideStyles}\n`;
       }
     }
 
     // Process elements and their styles
-    const elements = slide.elements || [];
+    const elements = slide.elements?.length > 0 ? slide.elements : [slide.layout?.elements];
+
+    console.log('elements', elements);
     elements.forEach((element) => {
       if (element.type === 'group' && element.children) {
         // Process group element styles
         if (element.style && typeof element.style === 'object') {
-          const groupStyles = this.convertStyleObjectToCSS(element.style);
+          const groupStyles = this.convertStyleObjectToCSS(element.style, slideVarsMap, templateVarsMap);
           if (groupStyles) {
             scss += `        ${element.custom_style_node ?? '.tiptap-block-node'} {\n          ${groupStyles}`;
 
             // Process children elements within this group
-            const childrenScss = this.generateChildrenScss(element.children, '          ');
+            const childrenScss = this.generateChildrenScss(
+              element.children,
+              '          ',
+              slideVarsMap,
+              templateVarsMap
+            );
             if (childrenScss) {
               scss += `\n${childrenScss}`;
             }
@@ -480,7 +542,7 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
           scss += `        ${element.custom_style_node ?? '.tiptap-block-node'} {\n`;
 
           // Process children elements within this group
-          const childrenScss = this.generateChildrenScss(element.children, '          ');
+          const childrenScss = this.generateChildrenScss(element.children, '          ', slideVarsMap, templateVarsMap);
           if (childrenScss) {
             scss += `${childrenScss}`;
           }
@@ -489,7 +551,7 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
         }
       } else {
         // Process regular elements
-        scss += this.generateElementScss(element);
+        scss += this.generateElementScss(element, slideVarsMap, templateVarsMap);
       }
     });
 
@@ -501,19 +563,25 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
   },
 
   // Helper method to generate SCSS for children elements with proper nesting
-  generateChildrenScss(children, indentation = '        ') {
+  generateChildrenScss(children, indentation = '        ', slideVarsMap = {}, templateVarsMap = {}) {
+    console.log('children', children);
     let childrenScss = '';
 
     children.forEach((child) => {
       if (child.type === 'group' && child.children) {
         // Handle nested group
         if (child.style && typeof child.style === 'object') {
-          const nestedGroupStyles = this.convertStyleObjectToCSS(child.style);
+          const nestedGroupStyles = this.convertStyleObjectToCSS(child.style, slideVarsMap, templateVarsMap);
           if (nestedGroupStyles) {
             childrenScss += `\n${indentation}  ${child.custom_style_node ?? '.tiptap-block-node'} {\n${indentation}    ${nestedGroupStyles.replace(/\n          /g, `\n${indentation}    `)}`;
 
             // Recursively process grandchildren
-            const grandChildrenScss = this.generateChildrenScss(child.children, indentation + '    ');
+            const grandChildrenScss = this.generateChildrenScss(
+              child.children,
+              indentation + '    ',
+              slideVarsMap,
+              templateVarsMap
+            );
             if (grandChildrenScss) {
               childrenScss += `${grandChildrenScss}`;
             }
@@ -524,7 +592,12 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
           // Group without styles but with children
           childrenScss += `\n${indentation}  ${child.custom_style_node ?? '.tiptap-block-node'} {`;
 
-          const grandChildrenScss = this.generateChildrenScss(child.children, indentation + '    ');
+          const grandChildrenScss = this.generateChildrenScss(
+            child.children,
+            indentation + '    ',
+            slideVarsMap,
+            templateVarsMap
+          );
           if (grandChildrenScss) {
             childrenScss += `${grandChildrenScss}`;
           }
@@ -534,7 +607,7 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
       } else {
         // Handle regular child elements
         if (child.style && typeof child.style === 'object') {
-          const elementStyles = this.convertStyleObjectToCSS(child.style);
+          const elementStyles = this.convertStyleObjectToCSS(child.style, slideVarsMap, templateVarsMap);
           if (elementStyles) {
             const selector = this.getSelectorForElement(child);
 
@@ -550,12 +623,12 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
   },
 
   // Helper method to generate SCSS for individual elements
-  generateElementScss(element) {
+  generateElementScss(element, slideVarsMap = {}, templateVarsMap = {}) {
     if (!element.style || typeof element.style !== 'object') {
       return '';
     }
 
-    const elementStyles = this.convertStyleObjectToCSS(element.style);
+    const elementStyles = this.convertStyleObjectToCSS(element.style, slideVarsMap, templateVarsMap);
     if (!elementStyles) {
       return '';
     }
@@ -566,7 +639,7 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
   },
 
   // Helper method to convert style object to CSS string
-  convertStyleObjectToCSS(styleObj) {
+  convertStyleObjectToCSS(styleObj, slideVarsMap = {}, templateVarsMap = {}) {
     if (!styleObj || typeof styleObj !== 'object') {
       return '';
     }
@@ -578,17 +651,42 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
 
         // Handle nested objects (like li styles)
         if (typeof value === 'object' && value !== null) {
-          const nestedStyles = this.convertStyleObjectToCSS(value);
+          const nestedStyles = this.convertStyleObjectToCSS(value, slideVarsMap, templateVarsMap);
           if (nestedStyles) {
             return `${cssKey} {\n            ${nestedStyles}\n          }`;
           }
           return '';
         }
 
-        return `${cssKey}: ${value};`;
+        const resolved = this.resolveVariablesInString(String(value), slideVarsMap, templateVarsMap);
+        return `${cssKey}: ${resolved};`;
       })
       .filter((style) => style !== '') // Remove empty styles
       .join('\n          ');
+  },
+
+  arrayToVarMap(variablesArray = []) {
+    if (!Array.isArray(variablesArray)) return {};
+    return variablesArray.reduce((acc, curr) => {
+      if (curr && typeof curr.name === 'string') {
+        acc[curr.name] = curr.value ?? '';
+      }
+      return acc;
+    }, {});
+  },
+
+  resolveVariablesInString(value, slideVarsMap = {}, templateVarsMap = {}) {
+    if (typeof value !== 'string') return value;
+    const varPattern = /\{\{\s*([^}\s]+)\s*\}\}/g;
+    return value.replace(varPattern, (_, varName) => {
+      if (Object.prototype.hasOwnProperty.call(slideVarsMap, varName)) {
+        return slideVarsMap[varName] ?? '';
+      }
+      if (Object.prototype.hasOwnProperty.call(templateVarsMap, varName)) {
+        return templateVarsMap[varName] ?? '';
+      }
+      return '';
+    });
   },
 
   // Helper method to save SCSS to file

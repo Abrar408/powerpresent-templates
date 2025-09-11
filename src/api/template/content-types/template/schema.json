@@ -44,6 +44,14 @@
     },
     "backgroundColor": {
       "type": "string"
+    },
+    "variables": {
+      "type": "component",
+      "component": "shared.variable",
+      "repeatable": true
+    },
+    "style": {
+      "type": "json"
     }
   }
 }
