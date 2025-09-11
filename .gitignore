@@ -2,6 +2,8 @@
 # OS X
 ############################
 
+public/styles/*
+
 .DS_Store
 .AppleDouble
 .LSOverride
