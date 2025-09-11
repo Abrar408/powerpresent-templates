@@ -405,6 +405,39 @@ export interface ApiGlobalGlobal extends Struct.SingleTypeSchema {
   };
 }
 
+export interface ApiLayoutLayout extends Struct.CollectionTypeSchema {
+  collectionName: 'layouts';
+  info: {
+    displayName: 'Layout';
+    pluralName: 'layouts';
+    singularName: 'layout';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    elements: Schema.Attribute.Component<'shared.element', false> &
+      Schema.Attribute.Required;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::layout.layout'
+    > &
+      Schema.Attribute.Private;
+    name: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique;
+    publishedAt: Schema.Attribute.DateTime;
+    slides: Schema.Attribute.Relation<'oneToMany', 'api::slide.slide'>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiSlideSlide extends Struct.CollectionTypeSchema {
   collectionName: 'slides';
   info: {
@@ -424,6 +457,7 @@ export interface ApiSlideSlide extends Struct.CollectionTypeSchema {
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     elements: Schema.Attribute.Component<'shared.element', true>;
+    layout: Schema.Attribute.Relation<'manyToOne', 'api::layout.layout'>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::slide.slide'> &
       Schema.Attribute.Private;
@@ -434,6 +468,7 @@ export interface ApiSlideSlide extends Struct.CollectionTypeSchema {
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    variables: Schema.Attribute.Component<'shared.variable', true>;
     variant: Schema.Attribute.String;
     variations: Schema.Attribute.Relation<
       'oneToMany',
@@ -474,10 +509,12 @@ export interface ApiTemplateTemplate extends Struct.CollectionTypeSchema {
       Schema.Attribute.Unique;
     publishedAt: Schema.Attribute.DateTime;
     slides: Schema.Attribute.Relation<'oneToMany', 'api::slide.slide'>;
+    style: Schema.Attribute.JSON;
     thumbnail: Schema.Attribute.Media<'images'>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    variables: Schema.Attribute.Component<'shared.variable', true>;
   };
 }
 
@@ -1026,6 +1063,7 @@ declare module '@strapi/strapi' {
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
       'api::global.global': ApiGlobalGlobal;
+      'api::layout.layout': ApiLayoutLayout;
       'api::slide.slide': ApiSlideSlide;
       'api::template.template': ApiTemplateTemplate;
       'api::variation.variation': ApiVariationVariation;

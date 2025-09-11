@@ -229,6 +229,17 @@ export interface SharedSlider extends Struct.ComponentSchema {
   };
 }
 
+export interface SharedVariable extends Struct.ComponentSchema {
+  collectionName: 'components_shared_variables';
+  info: {
+    displayName: 'Variable';
+  };
+  attributes: {
+    name: Schema.Attribute.String & Schema.Attribute.Required;
+    value: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
 declare module '@strapi/strapi' {
   export module Public {
     export interface ComponentSchemas {
@@ -242,6 +253,7 @@ declare module '@strapi/strapi' {
       'shared.rich-text': SharedRichText;
       'shared.seo': SharedSeo;
       'shared.slider': SharedSlider;
+      'shared.variable': SharedVariable;
     }
   }
 }
