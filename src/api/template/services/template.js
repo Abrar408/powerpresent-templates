@@ -422,14 +422,15 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
       ...template,
       slides: template.slides.map((slide) => ({
         ...slide,
-        elements: slide.elements?.length > 0 ? slide.elements : [slide.layout?.elements],
+        elements: slide.elements?.length > 0 ? slide.elements : slide.layout?.elements ? [slide.layout?.elements] : [],
       })),
     };
   },
 
   // Helper method to generate HTML for a slide
   generateSlideHTML(slide, slideNumber, templateName) {
-    const elements = slide.elements?.length > 0 ? slide.elements : [slide.layout?.elements];
+    const elements =
+      slide.elements?.length > 0 ? slide.elements : slide.layout?.elements ? [slide.layout?.elements] : [];
     const slideType = slide.name;
     const variant = slide.variant || 'default';
     let htmlContent = '';
@@ -571,7 +572,8 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
     }
 
     // Process elements and their styles
-    const elements = slide.elements?.length > 0 ? slide.elements : [slide.layout?.elements];
+    const elements =
+      slide.elements?.length > 0 ? slide.elements : slide.layout?.elements ? [slide.layout?.elements] : [];
 
     // console.log('elements', elements);
     elements.forEach((element) => {
