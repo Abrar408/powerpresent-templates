@@ -13,6 +13,8 @@
         "heading2",
         "heading3",
         "heading4",
+        "heading5",
+        "heading6",
         "paragraph",
         "span",
         "ordered-bullets",
@@ -74,10 +76,7 @@
           ]
         }
       },
-      "enum": [
-        "numbered-bullet",
-        "icon"
-      ]
+      "enum": ["numbered-bullet", "icon"]
     },
     "media": {
       "type": "media",
@@ -92,9 +91,7 @@
         }
       },
       "multiple": false,
-      "allowedTypes": [
-        "images"
-      ]
+      "allowedTypes": ["images"]
     }
   }
 }

@@ -526,6 +526,10 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
         return '<h3>Heading # 3</h3>';
       case 'heading4':
         return '<h4>Heading # 4</h4>';
+      case 'heading5':
+        return '<h5>Heading # 5</h5>';
+      case 'heading6':
+        return '<h6>Heading # 6</h6>';
       case 'paragraph':
         return '<p>Lorem ipsum dolor sit amet...</p>';
       case 'un-ordered-bullets':
@@ -787,6 +791,10 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
         return '.node-heading:has(h3)';
       case 'heading4':
         return '.node-heading:has(h4)';
+      case 'heading5':
+        return '.node-heading:has(h5)';
+      case 'heading6':
+        return '.node-heading:has(h6)';
       case 'paragraph':
         return '.node-paragraph';
       case 'un-ordered-bullets':
