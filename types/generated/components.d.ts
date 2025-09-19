@@ -56,6 +56,7 @@ export interface SharedChildElement extends Struct.ComponentSchema {
         'shape',
         'group',
         'background-element',
+        'logo',
       ]
     > &
       Schema.Attribute.Required;
@@ -91,6 +92,7 @@ export interface SharedDeepNestedChildElement extends Struct.ComponentSchema {
         'image',
         'shape',
         'background-element',
+        'logo',
       ]
     > &
       Schema.Attribute.Required;
@@ -129,6 +131,7 @@ export interface SharedElement extends Struct.ComponentSchema {
         'group',
         'shape',
         'background-element',
+        'logo',
       ]
     > &
       Schema.Attribute.Required;
@@ -180,6 +183,7 @@ export interface SharedNestedChildElement extends Struct.ComponentSchema {
         'shape',
         'group',
         'background-element',
+        'logo',
       ]
     > &
       Schema.Attribute.Required;

@@ -20,7 +20,8 @@
         "un-ordered-bullets",
         "image",
         "shape",
-        "background-element"
+        "background-element",
+        "logo"
       ]
     },
     "style": {

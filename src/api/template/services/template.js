@@ -542,10 +542,16 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
         <li>Heading # 4</li>
         <li>Heading # 4</li>
       </${listType}>`;
-      case 'image':
+      case 'image': {
         const mediaUrl = element.media?.url;
         const altText = element.media?.alternativeText || 'Image';
         return `<img src="${mediaUrl ?? '/assets/placeholder.png'}" alt="${altText}" />`;
+      }
+      case 'logo': {
+        const mediaUrl = element.media?.url;
+        const altText = element.media?.alternativeText || 'Image';
+        return `<img src="${mediaUrl ?? '/assets/placeholder.png'}" alt="${altText}" data-type="logo" />`;
+      }
       case 'shape':
         return '<shape-node></shape-node>';
       default:
@@ -802,6 +808,8 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
       case 'ordered-bullets':
         return 'ol';
       case 'image':
+        return '.node-image';
+      case 'logo':
         return '.node-image';
       case 'shape':
         return '.node-shapeNode';

@@ -22,7 +22,8 @@
         "image",
         "group",
         "shape",
-        "background-element"
+        "background-element",
+        "logo"
       ]
     },
     "style": {
@@ -76,7 +77,10 @@
           ]
         }
       },
-      "enum": ["numbered-bullet", "icon"]
+      "enum": [
+        "numbered-bullet",
+        "icon"
+      ]
     },
     "media": {
       "type": "media",
@@ -91,7 +95,9 @@
         }
       },
       "multiple": false,
-      "allowedTypes": ["images"]
+      "allowedTypes": [
+        "images"
+      ]
     }
   }
 }

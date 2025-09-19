@@ -21,7 +21,8 @@
         "image",
         "shape",
         "group",
-        "background-element"
+        "background-element",
+        "logo"
       ]
     },
     "style": {
