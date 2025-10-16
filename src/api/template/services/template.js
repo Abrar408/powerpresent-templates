@@ -138,52 +138,98 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
             background_image: true,
             variables: true,
             variations: {
-              populate: {
-                elements: {
-                  populate: {
-                    media: true,
-                    background_element: {
-                      populate: {
-                        media: true,
-                      },
+              elements: {
+                populate: {
+                  media: true,
+                  background_element: {
+                    populate: {
+                      media: true,
                     },
-                    children: {
-                      // Populate child elements
-                      populate: {
-                        children: {
-                          // Populate nested-child elements
-                          populate: {
-                            children: {
-                              // Populate deep-nested-child elements
-                              populate: {
-                                media: true,
-                                background_element: {
-                                  populate: {
-                                    media: true,
-                                  },
+                  },
+                  children: {
+                    // Populate child elements
+                    populate: {
+                      children: {
+                        // Populate nested-child elements
+                        populate: {
+                          children: {
+                            // Populate deep-nested-child elements
+                            populate: {
+                              media: true,
+                              background_element: {
+                                populate: {
+                                  media: true,
                                 },
                               },
                             },
-                            media: true,
-                            background_element: {
-                              populate: {
-                                media: true,
-                              },
+                          },
+                          media: true,
+                          background_element: {
+                            populate: {
+                              media: true,
                             },
                           },
                         },
-                        media: true,
-                        background_element: {
-                          populate: {
-                            media: true,
+                      },
+                      media: true,
+                      background_element: {
+                        populate: {
+                          media: true,
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+              layout: {
+                populate: {
+                  elements: {
+                    populate: {
+                      media: true,
+                      background_element: {
+                        populate: {
+                          media: true,
+                        },
+                      },
+                      children: {
+                        // Populate child elements
+                        populate: {
+                          children: {
+                            // Populate nested-child elements
+                            populate: {
+                              children: {
+                                // Populate deep-nested-child elements
+                                populate: {
+                                  media: true,
+                                  background_element: {
+                                    populate: {
+                                      media: true,
+                                    },
+                                  },
+                                },
+                              },
+                              media: true,
+                              background_element: {
+                                populate: {
+                                  media: true,
+                                },
+                              },
+                            },
+                          },
+                          media: true,
+                          background_element: {
+                            populate: {
+                              media: true,
+                            },
                           },
                         },
                       },
                     },
                   },
                 },
-                background_image: true,
               },
+              background_image: true,
+              variables: true,
             },
           },
         },

@@ -65,7 +65,18 @@ module.exports = createCoreController('api::template.template', ({ strapi }) => 
           background_color: slide.background_color,
           background_image: slide.background_image,
           elements: slide.elements,
-          // variations: slide.variations,
+          variations: slide.variations.map((v) => ({
+            name: v.name,
+            variant: v.variant,
+            style: v.style,
+            background_color: v.background_color,
+            background_image: v.background_image,
+            elements: v.elements,
+            layout: v.layout,
+            variables: v.variables,
+          })),
+          layout: slide.layout,
+          variables: slide.variables,
         })),
       };
 
