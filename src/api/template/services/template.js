@@ -137,100 +137,100 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
             },
             background_image: true,
             variables: true,
-            variations: {
-              elements: {
-                populate: {
-                  media: true,
-                  background_element: {
-                    populate: {
-                      media: true,
-                    },
-                  },
-                  children: {
-                    // Populate child elements
-                    populate: {
-                      children: {
-                        // Populate nested-child elements
-                        populate: {
-                          children: {
-                            // Populate deep-nested-child elements
-                            populate: {
-                              media: true,
-                              background_element: {
-                                populate: {
-                                  media: true,
-                                },
-                              },
-                            },
-                          },
-                          media: true,
-                          background_element: {
-                            populate: {
-                              media: true,
-                            },
-                          },
-                        },
-                      },
-                      media: true,
-                      background_element: {
-                        populate: {
-                          media: true,
-                        },
-                      },
-                    },
-                  },
-                },
-              },
-              layout: {
-                populate: {
-                  elements: {
-                    populate: {
-                      media: true,
-                      background_element: {
-                        populate: {
-                          media: true,
-                        },
-                      },
-                      children: {
-                        // Populate child elements
-                        populate: {
-                          children: {
-                            // Populate nested-child elements
-                            populate: {
-                              children: {
-                                // Populate deep-nested-child elements
-                                populate: {
-                                  media: true,
-                                  background_element: {
-                                    populate: {
-                                      media: true,
-                                    },
-                                  },
-                                },
-                              },
-                              media: true,
-                              background_element: {
-                                populate: {
-                                  media: true,
-                                },
-                              },
-                            },
-                          },
-                          media: true,
-                          background_element: {
-                            populate: {
-                              media: true,
-                            },
-                          },
-                        },
-                      },
-                    },
-                  },
-                },
-              },
-              background_image: true,
-              variables: true,
-            },
+            // variations: {
+            //   elements: {
+            //     populate: {
+            //       media: true,
+            //       background_element: {
+            //         populate: {
+            //           media: true,
+            //         },
+            //       },
+            //       children: {
+            //         // Populate child elements
+            //         populate: {
+            //           children: {
+            //             // Populate nested-child elements
+            //             populate: {
+            //               children: {
+            //                 // Populate deep-nested-child elements
+            //                 populate: {
+            //                   media: true,
+            //                   background_element: {
+            //                     populate: {
+            //                       media: true,
+            //                     },
+            //                   },
+            //                 },
+            //               },
+            //               media: true,
+            //               background_element: {
+            //                 populate: {
+            //                   media: true,
+            //                 },
+            //               },
+            //             },
+            //           },
+            //           media: true,
+            //           background_element: {
+            //             populate: {
+            //               media: true,
+            //             },
+            //           },
+            //         },
+            //       },
+            //     },
+            //   },
+            //   layout: {
+            //     populate: {
+            //       elements: {
+            //         populate: {
+            //           media: true,
+            //           background_element: {
+            //             populate: {
+            //               media: true,
+            //             },
+            //           },
+            //           children: {
+            //             // Populate child elements
+            //             populate: {
+            //               children: {
+            //                 // Populate nested-child elements
+            //                 populate: {
+            //                   children: {
+            //                     // Populate deep-nested-child elements
+            //                     populate: {
+            //                       media: true,
+            //                       background_element: {
+            //                         populate: {
+            //                           media: true,
+            //                         },
+            //                       },
+            //                     },
+            //                   },
+            //                   media: true,
+            //                   background_element: {
+            //                     populate: {
+            //                       media: true,
+            //                     },
+            //                   },
+            //                 },
+            //               },
+            //               media: true,
+            //               background_element: {
+            //                 populate: {
+            //                   media: true,
+            //                 },
+            //               },
+            //             },
+            //           },
+            //         },
+            //       },
+            //     },
+            //   },
+            //   background_image: true,
+            //   variables: true,
+            // },
           },
         },
       },
@@ -260,20 +260,20 @@ module.exports = createCoreService('api::template.template', ({ strapi }) => ({
       slideCounter++;
 
       // Generate HTML and SCSS for each variation of this slide
-      if (slide.variations && slide.variations.length > 0) {
-        slide.variations.forEach((variation, variationIndex) => {
-          // Create a variation object that looks like a slide for processing
-          const variationAsSlide = {
-            ...variation,
-            name: slide.name,
-            variant: variation.variant,
-          };
+      // if (slide.variations && slide.variations.length > 0) {
+      //   slide.variations.forEach((variation, variationIndex) => {
+      //     // Create a variation object that looks like a slide for processing
+      //     const variationAsSlide = {
+      //       ...variation,
+      //       name: slide.name,
+      //       variant: variation.variant,
+      //     };
 
-          combinedHTML += this.generateSlideHTML(variationAsSlide, slideCounter, template.name);
-          combinedSCSS += this.generateSlideScss(variationAsSlide, templateVarsMap);
-          slideCounter++;
-        });
-      }
+      //     combinedHTML += this.generateSlideHTML(variationAsSlide, slideCounter, template.name);
+      //     combinedSCSS += this.generateSlideScss(variationAsSlide, templateVarsMap);
+      //     slideCounter++;
+      //   });
+      // }
     });
 
     const templateLevelStyles = this.convertStyleObjectToCSS(template.style || {}, {}, templateVarsMap);
