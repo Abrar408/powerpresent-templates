@@ -3,9 +3,9 @@ module.exports = {
     {
       name: 'strapi-app',
       script: 'npm',
-      args: ['run', 'develop'],
+      args: ['run', 'start'],
       env: {
-        NODE_ENV: 'development',
+        NODE_ENV: 'production',
       },
     },
   ],
