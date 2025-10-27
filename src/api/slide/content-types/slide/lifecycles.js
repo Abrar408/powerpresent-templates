@@ -1,4 +1,4 @@
-export default {
+module.exports = {
   async afterCreate(event) {
     const createdDocumentId = event?.result?.documentId ?? event?.params?.data?.documentId;
     if (createdDocumentId) {
